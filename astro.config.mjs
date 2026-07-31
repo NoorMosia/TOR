@@ -5,6 +5,6 @@ import sitemap from '@astrojs/sitemap';
 export default defineConfig({
   output: 'static',
   adapter: vercel(),
-  site: 'https://theoneroom.co.za',
+  site: 'https://tor-jet.vercel.app',
   integrations: [sitemap()],
 });

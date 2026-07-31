@@ -8,9 +8,9 @@ interface Props {
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
 const {
-  title = 'The One Room | Music & Comedy Club — Cape Town',
+  title = 'The One Room | Music & Comedy Club — Gqeberha',
   description = 'Live jazz, soul, hip-hop and stand-up comedy in Gqeberha. The One Room — where artists feel like they\'re home.',
-  image = '/images/zoe-modiga.jpg',
+  image = '/images/noma.jpg',
 } = Astro.props;
 ---
 
@@ -61,7 +61,7 @@ const {
       "@type": "MusicVenue",
       "name": "The One Room",
       "description": "Live jazz, soul, hip-hop and stand-up comedy in Gqeberha.",
-      "url": "https://theoneroom.co.za",
+      "url": "https://tor-jet.vercel.app",
       "address": {
         "@type": "PostalAddress",
         "streetAddress": "52 Westbourne Rd",
@@ -72,7 +72,7 @@ const {
       "telephone": "+27215550199",
       "email": "info@theoneroom.co.za",
       "openingHours": "We-Su 19:00-02:00",
-      "image": "https://theoneroom.co.za/images/zoe-modiga.jpg",
+      "image": "https://tor-jet.vercel.app/images/noma.jpg",
       "sameAs": [],
       "event": [
         {
@@ -80,7 +80,7 @@ const {
           "name": "Zoë Modiga — Nomhanda Tour",
           "startDate": "2026-08-15T19:30",
           "performer": { "@type": "Person", "name": "Zoë Modiga" },
-          "offers": { "@type": "Offer", "price": "350", "priceCurrency": "ZAR", "url": "https://theoneroom.co.za/#shows" },
+          "offers": { "@type": "Offer", "price": "350", "priceCurrency": "ZAR", "url": "https://tor-jet.vercel.app/#shows" },
           "location": { "@type": "Place", "name": "The One Room" }
         },
         {
@@ -88,7 +88,7 @@ const {
           "name": "Loyiso Gola — Unfiltered",
           "startDate": "2026-08-21T20:00",
           "performer": { "@type": "Person", "name": "Loyiso Gola" },
-          "offers": { "@type": "Offer", "price": "250", "priceCurrency": "ZAR", "url": "https://theoneroom.co.za/#shows" },
+          "offers": { "@type": "Offer", "price": "250", "priceCurrency": "ZAR", "url": "https://tor-jet.vercel.app/#shows" },
           "location": { "@type": "Place", "name": "The One Room" }
         }
       ]

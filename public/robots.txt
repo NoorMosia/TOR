@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://theoneroom.co.za/sitemap-index.xml
+Sitemap: https://tor-jet.vercel.app/sitemap-index.xml
