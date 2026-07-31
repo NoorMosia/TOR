@@ -1,0 +1,117 @@
+---
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="footer-top">
+    <div class="footer-brand">
+      <span class="footer-logo heading-display">The One Room</span>
+      <p class="footer-desc">Music. Comedy. Cape Town.</p>
+    </div>
+
+    <div class="footer-links-group">
+      <div class="footer-col">
+        <a href="#shows">Shows</a>
+        <a href="#highlights">Highlights</a>
+        <a href="#founder">About</a>
+      </div>
+
+      <div class="footer-col">
+        <a href="#">74 Long Street, Cape Town</a>
+        <a href="#">info@theoneroom.co.za</a>
+        <a href="#">+27 (0) 21 555 0199</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <span>&copy; {currentYear} The One Room</span>
+    <span>Wed — Sun from 7 PM</span>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--color-bg);
+    border-top: 1px solid var(--color-border);
+    padding: var(--space-lg) var(--space-lg) var(--space-md);
+  }
+
+  .footer-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--space-xl);
+  }
+
+  .footer-brand {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .footer-logo {
+    font-size: 1.5rem;
+    color: var(--color-white);
+  }
+
+  .footer-desc {
+    font-size: 0.85rem;
+    color: var(--color-text-subtle);
+  }
+
+  .footer-links-group {
+    display: flex;
+    gap: 4rem;
+  }
+
+  .footer-col {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .footer-col a {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    transition: color 0.2s;
+  }
+
+  .footer-col a:hover {
+    color: var(--color-white);
+  }
+
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--color-border);
+    font-size: 0.75rem;
+    color: var(--color-text-subtle);
+    letter-spacing: 0.02em;
+  }
+
+  @media (max-width: 768px) {
+    .site-footer {
+      padding: var(--space-lg) var(--space-md) var(--space-md);
+    }
+
+    .footer-top {
+      flex-direction: column;
+      gap: var(--space-lg);
+      margin-bottom: var(--space-lg);
+    }
+
+    .footer-links-group {
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .footer-bottom {
+      flex-direction: column;
+      gap: 0.5rem;
+      align-items: flex-start;
+    }
+  }
+</style>

@@ -1,0 +1,138 @@
+---
+// Founder section - editorial, asymmetric
+const founder = {
+  name: 'Nomakhosini Dyosopu',
+  role: 'Founder',
+  image: '/images/noma.jpg',
+  quote: 'I wanted a room where the music doesn\'t have to explain itself. Where comedy doesn\'t have to be safe. Where artists feel like they\'re home.',
+  bio: 'A decade in Cape Town\'s nightlife, from booking acts in backrooms to building The One Room from nothing. Nomakhosini created a space that doesn\'t compromise — for artists or for the people who come to listen.',
+};
+---
+
+<section id="founder" class="section-fullscreen founder-section">
+  <div class="founder-grid">
+    <div class="founder-image-col">
+      <img src={founder.image} alt={founder.name} class="founder-img" />
+    </div>
+
+    <div class="founder-text-col">
+      <blockquote class="founder-quote reveal">
+        "{founder.quote}"
+      </blockquote>
+
+      <div class="founder-bio reveal">
+        <p>{founder.bio}</p>
+      </div>
+
+      <div class="founder-sig">
+        <span class="founder-name">{founder.name}</span>
+        <span class="founder-role">{founder.role}</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .founder-section {
+    display: flex;
+    align-items: center;
+    background: var(--color-bg);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .founder-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+    min-height: 100vh;
+  }
+
+  .founder-image-col {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .founder-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .founder-text-col {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: var(--space-xl) var(--space-lg);
+    gap: var(--space-md);
+  }
+
+  .founder-quote {
+    font-family: var(--font-display);
+    font-size: clamp(1.4rem, 2.5vw, 2rem);
+    font-weight: 500;
+    line-height: 1.4;
+    color: var(--color-white);
+    font-style: normal;
+  }
+
+  .founder-bio {
+    font-size: 1rem;
+    line-height: 1.8;
+    color: var(--color-text-muted);
+    max-width: 480px;
+  }
+
+  .founder-sig {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    margin-top: var(--space-sm);
+  }
+
+  .founder-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-white);
+  }
+
+  .founder-role {
+    font-size: 0.8rem;
+    color: var(--color-text-subtle);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 768px) {
+    .founder-section {
+      min-height: auto;
+    }
+
+    .founder-grid {
+      grid-template-columns: 1fr;
+      grid-template-rows: 45vh auto;
+      min-height: auto;
+    }
+
+    .founder-text-col {
+      padding: var(--space-lg) var(--space-md);
+    }
+
+    .founder-quote {
+      font-size: 1.2rem;
+    }
+
+    .founder-bio {
+      font-size: 0.9rem;
+    }
+  }
+
+  @media (max-width: 380px) {
+    .founder-grid {
+      grid-template-rows: 40vh auto;
+    }
+
+    .founder-text-col {
+      padding: var(--space-md) 1.25rem;
+    }
+  }
+</style>

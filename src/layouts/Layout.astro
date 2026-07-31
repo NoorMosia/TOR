@@ -1,0 +1,140 @@
+---
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+}
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+
+const {
+  title = 'The One Room | Music & Comedy Club — Cape Town',
+  description = 'Live jazz, soul, hip-hop and stand-up comedy in Cape Town. The One Room — where artists feel like they\'re home.',
+  image = '/images/zoe-modiga.jpg',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- SEO -->
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL.href} />
+    <meta name="robots" content="index, follow" />
+    <meta name="author" content="The One Room" />
+    <meta name="keywords" content="live music Cape Town, comedy club, jazz, soul, hip-hop, stand-up comedy, The One Room, music venue" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL.href} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={new URL(image, Astro.site).href} />
+    <meta property="og:site_name" content="The One Room" />
+    <meta property="og:locale" content="en_ZA" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={canonicalURL.href} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={new URL(image, Astro.site).href} />
+
+    <!-- Favicons -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#111110" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&f[]=satoshi@400,500,600,700,900&display=swap" rel="stylesheet" />
+
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "MusicVenue",
+      "name": "The One Room",
+      "description": "Live jazz, soul, hip-hop and stand-up comedy in Cape Town.",
+      "url": "https://theoneroom.co.za",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "74 Long Street",
+        "addressLocality": "Cape Town",
+        "addressCountry": "ZA"
+      },
+      "telephone": "+27215550199",
+      "email": "info@theoneroom.co.za",
+      "openingHours": "We-Su 19:00-02:00",
+      "image": "https://theoneroom.co.za/images/zoe-modiga.jpg",
+      "sameAs": [],
+      "event": [
+        {
+          "@type": "MusicEvent",
+          "name": "Zoë Modiga — Nomhanda Tour",
+          "startDate": "2026-08-15T19:30",
+          "performer": { "@type": "Person", "name": "Zoë Modiga" },
+          "offers": { "@type": "Offer", "price": "350", "priceCurrency": "ZAR", "url": "https://theoneroom.co.za/#shows" },
+          "location": { "@type": "Place", "name": "The One Room" }
+        },
+        {
+          "@type": "ComedyEvent",
+          "name": "Loyiso Gola — Unfiltered",
+          "startDate": "2026-08-21T20:00",
+          "performer": { "@type": "Person", "name": "Loyiso Gola" },
+          "offers": { "@type": "Offer", "price": "250", "priceCurrency": "ZAR", "url": "https://theoneroom.co.za/#shows" },
+          "location": { "@type": "Place", "name": "The One Room" }
+        }
+      ]
+    })} />
+  </head>
+  <body>
+    <slot />
+    <script>
+      import { animate, stagger, inView, spring } from 'motion';
+
+      // --- Simple scroll reveals ---
+      document.querySelectorAll('.reveal').forEach((el) => {
+        inView(el, () => {
+          animate(
+            el,
+            { opacity: [0, 1], transform: ['translateY(20px)', 'translateY(0)'] },
+            { duration: 0.6, easing: [0.16, 1, 0.3, 1] }
+          );
+        }, { margin: '0px 0px -100px 0px' });
+      });
+
+      document.querySelectorAll('.reveal-scale').forEach((el) => {
+        inView(el, () => {
+          animate(
+            el,
+            { opacity: [0, 1], transform: ['scale(0.95)', 'scale(1)'] },
+            { duration: 0.7, easing: [0.16, 1, 0.3, 1] }
+          );
+        }, { margin: '0px 0px -80px 0px' });
+      });
+
+      // --- Staggered list animations for shows ---
+      document.querySelectorAll('.shows-list').forEach((list) => {
+        inView(list, () => {
+          animate(
+            list.querySelectorAll('.show-item'),
+            { opacity: [0, 1], transform: ['translateY(16px)', 'translateY(0)'] },
+            { duration: 0.4, delay: stagger(0.06) }
+          );
+        }, { margin: '0px 0px -80px 0px' });
+      });
+    </script>
+  </body>
+</html>
+
+<style is:global>
+  @import '../styles/global.css';
+</style>

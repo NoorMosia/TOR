@@ -1,0 +1,139 @@
+---
+// Past events / vibe section — horizontal scroll of real moments
+const vibes = [
+  { image: '/images/comedy1.jpg', caption: 'Comedy Night', sub: 'Loyiso Gola' },
+  { image: '/images/jazz.jpg', caption: 'Jazz Sessions', sub: 'Live Brass Fridays' },
+  { image: '/images/comedy2.jpg', caption: 'Open Mic', sub: 'Every Wednesday' },
+  { image: '/images/comedy3.jpg', caption: 'Soul Sundays', sub: 'Neo-Soul & R&B' },
+];
+---
+
+<section id="vibes" class="section-fullscreen vibes-section">
+  <div class="vibes-header">
+    <span class="vibes-label">What happens here</span>
+    <h2 class="vibes-title heading-display">The Room</h2>
+  </div>
+
+  <div class="vibes-scroll">
+    {vibes.map((vibe) => (
+      <div class="vibe-card">
+        <div class="vibe-image">
+          <img src={vibe.image} alt={vibe.caption} loading="lazy" />
+        </div>
+        <div class="vibe-info">
+          <span class="vibe-caption">{vibe.caption}</span>
+          <span class="vibe-sub">{vibe.sub}</span>
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
+
+<style>
+  .vibes-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: var(--space-lg) 0;
+    gap: var(--space-lg);
+    background: var(--color-bg);
+  }
+
+  .vibes-header {
+    padding: 0 var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .vibes-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-text-subtle);
+  }
+
+  .vibes-title {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    color: var(--color-white);
+  }
+
+  .vibes-scroll {
+    display: flex;
+    gap: 1.5rem;
+    padding: 0 var(--space-lg);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .vibes-scroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  .vibe-card {
+    flex: 0 0 auto;
+    width: 340px;
+    scroll-snap-align: start;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .vibe-image {
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    background: var(--color-surface);
+  }
+
+  .vibe-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s var(--ease-out);
+  }
+
+  .vibe-card:hover .vibe-image img {
+    transform: scale(1.03);
+  }
+
+  .vibe-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .vibe-caption {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-white);
+  }
+
+  .vibe-sub {
+    font-size: 0.8rem;
+    color: var(--color-text-subtle);
+  }
+
+  @media (max-width: 768px) {
+    .vibes-section {
+      min-height: auto;
+      padding: var(--space-lg) 0;
+    }
+
+    .vibes-header {
+      padding: 0 var(--space-md);
+    }
+
+    .vibes-scroll {
+      padding: 0 var(--space-md);
+      gap: 1rem;
+    }
+
+    .vibe-card {
+      width: 70vw;
+      max-width: 280px;
+    }
+  }
+</style>

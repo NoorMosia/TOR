@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Neon Spot | Music & Comedy Club</title>
+  <style>
+    /* --- RESET & GLOBAL STYLES --- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: #0b0b0f;
+      color: #ffffff;
+    }
+
+    /* --- NAVIGATION --- */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem 3rem;
+      z-index: 100;
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.85), transparent);
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 900;
+      letter-spacing: 2px;
+      color: #ff0055;
+      text-shadow: 0 0 10px rgba(255, 0, 85, 0.5);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 600;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover {
+      color: #00e5ff;
+    }
+
+    .btn-nav {
+      padding: 0.5rem 1.2rem;
+      border: 1px solid #00e5ff;
+      border-radius: 4px;
+      color: #00e5ff !important;
+    }
+
+    .btn-nav:hover {
+      background: #00e5ff;
+      color: #000 !important;
+    }
+
+    /* --- FULLSCREEN STRUCTURE --- */
+    .fullscreen-section {
+      width: 100vw;
+      height: 100vh;
+      max-width: 100%; 
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* --- SECTION 1: HERO (ZOË MODIGA) --- */
+    .hero-section {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+      background: url('https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=1920&q=80') center top / cover no-repeat;
+    }
+
+    .hero-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        to bottom,
+        rgba(11, 11, 15, 0.4) 0%,
+        rgba(11, 11, 15, 0.75) 60%,
+        rgba(11, 11, 15, 0.98) 100%
+      );
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      max-width: 850px;
+    }
+
+    .badge {
+      display: inline-block;
+      background-color: #ff0055;
+      color: #fff;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      padding: 0.4rem 1.2rem;
+      border-radius: 20px;
+      margin-bottom: 1.5rem;
+    }
+
+    .act-name {
+      font-size: 5.5rem;
+      font-weight: 900;
+      line-height: 1;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      margin-bottom: 1rem;
+      text-shadow: 0 0 25px rgba(255, 255, 255, 0.3);
+    }
+
+    .act-tagline {
+      font-size: 1.5rem;
+      color: #dddddd;
+      margin-bottom: 2rem;
+      font-weight: 400;
+    }
+
+    .event-details {
+      display: flex;
+      justify-content: center;
+      gap: 2.5rem;
+      font-size: 1.1rem;
+      color: #00e5ff;
+      font-weight: 600;
+      margin-bottom: 2.5rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+    }
+
+    .btn {
+      padding: 1rem 2.5rem;
+      font-size: 1rem;
+      font-weight: 700;
+      border-radius: 4px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background-color: #00e5ff;
+      color: #000;
+      box-shadow: 0 0 15px rgba(0, 229, 255, 0.4);
+    }
+
+    .btn-primary:hover {
+      background-color: #fff;
+      box-shadow: 0 0 25px rgba(255, 255, 255, 0.8);
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background-color: transparent;
+      color: #fff;
+      border: 2px solid #fff;
+    }
+
+    .btn-secondary:hover {
+      background-color: #fff;
+      color: #000;
+      transform: translateY(-2px);
+    }
+
+    /* --- SECTION 2: 4-COLUMN GENRES --- */
+    .genres-section {
+      display: flex;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    .genre-col {
+      flex: 1;
+      height: 100%;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      overflow: hidden;
+      transition: flex 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    .genre-col:hover {
+      flex: 2.5;
+    }
+
+    .genre-col.red { background-color: #d90429; }
+    .genre-col.yellow { background-color: #ffb703; color: #000; }
+    .genre-col.purple { background-color: #6a040f; }
+    .genre-col.blue { background-color: #0077b6; }
+
+    .genre-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      opacity: 0;
+      transform: scale(1.1);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+      z-index: 1;
+    }
+
+    .genre-bg::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.45);
+    }
+
+    .genre-col:hover .genre-bg {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .genre-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 1rem;
+      transition: transform 0.4s ease;
+    }
+
+    .genre-title {
+      font-size: 3rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      transform: rotate(180deg);
+      transition: all 0.5s ease;
+    }
+
+    .genre-sub {
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-top: 1rem;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.4s ease;
+      color: #fff;
+    }
+
+    .genre-col:hover .genre-title {
+      writing-mode: horizontal-tb;
+      transform: rotate(0deg);
+      font-size: 3.5rem;
+      color: #fff;
+      text-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+    }
+
+    .genre-col:hover .genre-sub {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* --- SECTION 3: VIDEO PLAYER --- */
+    .video-section {
+      background-color: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .video-container {
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+
+    .video-element {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .video-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.35);
+      pointer-events: none;
+      z-index: 2;
+      transition: background 0.4s ease;
+    }
+
+    .video-container.playing .video-overlay {
+      background: rgba(0, 0, 0, 0.15);
+    }
+
+    .video-info {
+      position: absolute;
+      top: 4rem;
+      left: 3rem;
+      z-index: 10;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+    }
+
+    .video-info h3 {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: 1px;
+    }
+
+    .video-info p {
+      color: #00e5ff;
+      font-weight: 600;
+      margin-top: 0.2rem;
+    }
+
+    .big-play-btn {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(1);
+      width: 110px;
+      height: 110px;
+      background-color: #ffffff;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 10;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .big-play-btn:hover {
+      transform: translate(-50%, -50%) scale(1.1);
+      box-shadow: 0 0 45px rgba(255, 255, 255, 0.8);
+    }
+
+    .big-play-btn svg {
+      width: 45px;
+      height: 45px;
+      fill: #000;
+      margin-left: 6px;
+    }
+
+    .video-container.playing .big-play-btn {
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, -50%) scale(0.7);
+    }
+
+    .controls-bar {
+      position: absolute;
+      bottom: 3rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(30px);
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      background: rgba(18, 18, 24, 0.85);
+      backdrop-filter: blur(12px);
+      padding: 0.8rem 2rem;
+      border-radius: 40px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.4s ease;
+    }
+
+    .video-container.playing .controls-bar {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .ctrl-btn {
+      background: none;
+      border: none;
+      color: #fff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.2s, transform 0.2s;
+    }
+
+    .ctrl-btn:hover {
+      color: #00e5ff;
+      transform: scale(1.15);
+    }
+
+    .ctrl-btn svg {
+      width: 28px;
+      height: 28px;
+      fill: currentColor;
+    }
+
+    .ctrl-btn.play-pause svg {
+      width: 36px;
+      height: 36px;
+    }
+
+    .swipe-hint {
+      display: none;
+      position: absolute;
+      bottom: 1.5rem;
+      width: 100%;
+      text-align: center;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 0.85rem;
+      letter-spacing: 1px;
+      z-index: 10;
+    }
+
+    /* --- SECTION 4: UPCOMING SHOWS (WHITE BG, AUTO HEIGHT) --- */
+    .shows-section {
+      background-color: #ffffff;
+      color: #0f0f14;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 6rem 2rem 5rem;
+      width: 100vw;
+      max-width: 100%;
+      min-height: 100vh;
+    }
+
+    .shows-container {
+      width: 100%;
+      max-width: 950px;
+    }
+
+    .shows-header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .shows-header h2 {
+      font-size: 2.8rem;
+      font-weight: 900;
+      letter-spacing: 1.5px;
+      color: #0f0f14;
+      text-transform: uppercase;
+    }
+
+    .shows-header p {
+      font-size: 1.05rem;
+      color: #666677;
+      margin-top: 0.4rem;
+      font-weight: 500;
+    }
+
+    .shows-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .show-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 1.8rem;
+      background: #f8f9fa;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+    }
+
+    .show-item:hover {
+      background: #ffffff;
+      border-color: #ff0055;
+      box-shadow: 0 10px 25px rgba(255, 0, 85, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .show-date {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-width: 75px;
+      padding: 0.5rem 0.8rem;
+      background: #0f0f14;
+      color: #ffffff;
+      border-radius: 8px;
+    }
+
+    .show-date .day {
+      font-size: 1.4rem;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .show-date .month {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #00e5ff;
+      margin-top: 0.2rem;
+    }
+
+    .show-info {
+      flex: 1;
+      margin: 0 1.8rem;
+    }
+
+    .show-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #0f0f14;
+    }
+
+    .show-meta {
+      font-size: 0.9rem;
+      color: #666677;
+      margin-top: 0.25rem;
+      display: flex;
+      gap: 1.2rem;
+      font-weight: 500;
+    }
+
+    .show-genre-badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-jazz { background: #ffe6ec; color: #ff0055; }
+    .badge-comedy { background: #fff3cd; color: #856404; }
+    .badge-soul { background: #f0e6ff; color: #6f42c1; }
+    .badge-hiphop { background: #e0f7fa; color: #0077b6; }
+
+    .show-action {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+    }
+
+    .show-price {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #0f0f14;
+    }
+
+    .btn-ticket {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.65rem 1.4rem;
+      background-color: #0f0f14;
+      color: #ffffff;
+      font-size: 0.9rem;
+      font-weight: 700;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .btn-ticket:hover {
+      background-color: #ff0055;
+      box-shadow: 0 4px 15px rgba(255, 0, 85, 0.3);
+    }
+
+    .all-shows-footer {
+      text-align: center;
+    }
+
+    .btn-view-all {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 1.1rem 2.8rem;
+      background: #ff0055;
+      color: #ffffff;
+      font-size: 1rem;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      text-decoration: none;
+      border-radius: 50px;
+      box-shadow: 0 6px 20px rgba(255, 0, 85, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    .btn-view-all:hover {
+      background: #0f0f14;
+      color: #00e5ff;
+      box-shadow: 0 8px 25px rgba(15, 15, 20, 0.4);
+      transform: translateY(-2px);
+    }
+
+    /* --- SECTION 5: ABOUT THE FOUNDER --- */
+    .founder-section {
+      background: #0d0d13;
+      padding: 6rem 2rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100vw;
+      max-width: 100%;
+      border-top: 1px solid #1c1c28;
+    }
+
+    .founder-container {
+      max-width: 1100px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 4rem;
+    }
+
+    .founder-img-wrapper {
+      flex: 0 0 320px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .founder-img {
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid #ff0055;
+      box-shadow: 0 0 30px rgba(255, 0, 85, 0.3), inset 0 0 15px rgba(0, 0, 0, 0.5);
+    }
+
+    .founder-content {
+      flex: 1;
+    }
+
+    .founder-subtitle {
+      color: #00e5ff;
+      font-size: 0.9rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    .founder-title {
+      font-size: 2.8rem;
+      font-weight: 900;
+      color: #ffffff;
+      margin-bottom: 1.5rem;
+      line-height: 1.1;
+    }
+
+    .founder-bio {
+      color: #b0b0c0;
+      font-size: 1.1rem;
+      line-height: 1.8;
+      font-weight: 400;
+    }
+
+    .founder-bio p {
+      margin-bottom: 1rem;
+    }
+
+    .founder-signature {
+      margin-top: 1.5rem;
+      font-style: italic;
+      color: #ffffff;
+      font-weight: 600;
+      font-size: 1.05rem;
+    }
+
+    /* --- FOOTER --- */
+    .site-footer {
+      background: #060609;
+      padding: 4rem 2rem 2rem;
+      border-top: 1px solid #181824;
+      color: #888899;
+    }
+
+    .footer-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 3rem;
+      margin-bottom: 3rem;
+    }
+
+    .footer-brand .logo {
+      display: inline-block;
+      margin-bottom: 1rem;
+    }
+
+    .footer-brand p {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      max-width: 320px;
+    }
+
+    .footer-title {
+      color: #ffffff;
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 1.2rem;
+    }
+
+    .footer-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .footer-links a {
+      color: #888899;
+      text-decoration: none;
+      font-size: 0.95rem;
+      transition: color 0.3s;
+    }
+
+    .footer-links a:hover {
+      color: #00e5ff;
+    }
+
+    .footer-bottom {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding-top: 2rem;
+      border-top: 1px solid #14141f;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+    }
+
+    /* --- RESPONSIVE MOBILE FIXES --- */
+    @media (max-width: 850px) {
+      .act-name { font-size: 3.2rem; }
+      .event-details { flex-direction: column; gap: 0.5rem; }
+      .hero-actions { flex-direction: column; }
+      
+      .genres-section { flex-direction: column; }
+      .genre-title {
+        writing-mode: horizontal-tb;
+        transform: rotate(0deg);
+        font-size: 2rem;
+      }
+      .genre-col:hover .genre-title { font-size: 2.2rem; }
+
+      .nav-btn { display: none !important; }
+      .swipe-hint { display: block; }
+      
+      .video-info { top: 5rem; left: 1.5rem; }
+      .video-info h3 { font-size: 1.4rem; }
+      .big-play-btn { width: 80px; height: 80px; }
+      .big-play-btn svg { width: 32px; height: 32px; }
+
+      /* Shows Section Mobile Stack */
+      .shows-section { padding: 5rem 1rem 3rem; }
+      .shows-header h2 { font-size: 2rem; }
+      .show-item { flex-direction: column; align-items: flex-start; gap: 1rem; }
+      .show-info { margin: 0; }
+      .show-action { width: 100%; justify-content: space-between; margin-top: 0.5rem; }
+
+      /* Founder Mobile Stack */
+      .founder-container { flex-direction: column; text-align: center; gap: 2rem; }
+      .founder-img-wrapper { flex: none; }
+      .founder-img { width: 220px; height: 220px; }
+      .founder-title { font-size: 2.2rem; }
+
+      /* Footer Mobile */
+      .footer-container { grid-template-columns: 1fr; gap: 2rem; }
+      .footer-bottom { flex-direction: column; gap: 1rem; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="logo">THE NEON SPOT</div>
+    <ul class="nav-links">
+      <li><a href="#hero">Next Act</a></li>
+      <li><a href="#genres">Genres</a></li>
+      <li><a href="#highlights">Highlights</a></li>
+      <li><a href="#shows">Upcoming Shows</a></li>
+      <li><a href="#founder" class="btn-nav">About Founder</a></li>
+    </ul>
+  </nav>
+
+  <!-- SECTION 1: HERO (ZOË MODIGA) -->
+  <section id="hero" class="fullscreen-section hero-section">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="badge">AFRO-JAZZ HEADLINER</div>
+      <h1 class="act-name">ZOË MODIGA</h1>
+      <p class="act-tagline">Nomhanda Tour — Live in Concert</p>
+      
+      <div class="event-details">
+        <span>📅 Saturday, Aug 15</span>
+        <span>⏰ Doors 7:30 PM</span>
+        <span>📍 Main Stage</span>
+      </div>
+
+      <div class="hero-actions">
+        <a href="#shows" class="btn btn-primary">Reserve Seats ($40)</a>
+        <a href="#genres" class="btn btn-secondary">Explore Genres</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 2: 4 INTERACTIVE COLOR COLUMNS -->
+  <section id="genres" class="fullscreen-section genres-section">
+    <div class="genre-col red">
+      <div class="genre-bg" style="background-image: url('https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcS9LzT5CAQ-LwbVYPuIs2WowJkax-Wked70kjkkuj0BvbNbdIF2GxUhwKsRdBLxV_PAhM17PGSoHBhq0Os');"></div>
+      <div class="genre-content">
+        <h2 class="genre-title">COMEDY</h2>
+        <p class="genre-sub">Stand-Up & Improv</p>
+      </div>
+    </div>
+
+    <div class="genre-col yellow">
+      <div class="genre-bg" style="background-image: url('https://encrypted-tbn3.gstatic.com/licensed-image?q=tbn:ANd9GcT0X9ABX1VFGgvbVQyJUY2O3da0IgY0vmNdOyiuKBviNx7LUNz8EUkw3UCHVHy7o10rQyUYU4S1LJkKIBc');"></div>
+      <div class="genre-content">
+        <h2 class="genre-title">JAZZ</h2>
+        <p class="genre-sub">Live Brass & Fusion</p>
+      </div>
+    </div>
+
+    <div class="genre-col purple">
+      <div class="genre-bg" style="background-image: url('https://encrypted-tbn3.gstatic.com/licensed-image?q=tbn:ANd9GcROBGshZeOpjH1ALpbKmecTz4N_Dhu0ZGh-ZxL2P9nYQ1psJJDkYUld5T0-pGF1PR8M3GL_dH6F2YE2gPw');"></div>
+      <div class="genre-content">
+        <h2 class="genre-title">SOUL</h2>
+        <p class="genre-sub">R&B & Neo-Soul</p>
+      </div>
+    </div>
+
+    <div class="genre-col blue">
+      <div class="genre-bg" style="background-image: url('https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcQHbzRIZwOrzB-w7b53YcJoSWuTTAMeMBBZLK6F6PLLmhzRjx-d-OIcJW6cC4-DYafFZC48v3f7T_Ea-Hs');"></div>
+      <div class="genre-content">
+        <h2 class="genre-title">HIPHOP</h2>
+        <p class="genre-sub">Beats & Freestyles</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 3: VIDEO PLAYER SECTION -->
+  <section id="highlights" class="fullscreen-section video-section">
+    <div class="video-container" id="videoContainer">
+      <div class="video-overlay"></div>
+
+      <div class="video-info">
+        <h3 id="videoTitle">Zoë Modiga — Live at The Neon Spot</h3>
+        <p id="videoCategory">Featured Concert Highlights</p>
+      </div>
+
+      <video id="clubVideo" class="video-element" playsinline loop poster="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=1920&q=80">
+        <source id="videoSource" src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+
+      <button class="big-play-btn" id="bigPlayBtn" aria-label="Play Video">
+        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+      </button>
+
+      <div class="controls-bar">
+        <button class="ctrl-btn nav-btn" id="prevBtn" title="Previous Video">
+          <svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+        </button>
+
+        <button class="ctrl-btn play-pause" id="togglePlayBtn" title="Play/Pause">
+          <svg id="pauseIcon" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+          <svg id="playIcon" viewBox="0 0 24 24" style="display: none;"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+
+        <button class="ctrl-btn nav-btn" id="nextBtn" title="Next Video">
+          <svg viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+        </button>
+      </div>
+
+      <div class="swipe-hint">Swipe left/right to change video</div>
+    </div>
+  </section>
+
+  <!-- SECTION 4: UPCOMING SHOWS -->
+  <section id="shows" class="shows-section">
+    <div class="shows-container">
+      
+      <div class="shows-header">
+        <h2>Upcoming Shows</h2>
+        <p>Grab your tickets before they sell out. Experience live music and comedy at its finest.</p>
+      </div>
+
+      <div class="shows-list">
+        
+        <!-- Show 1 -->
+        <div class="show-item">
+          <div class="show-date">
+            <span class="day">15</span>
+            <span class="month">AUG</span>
+          </div>
+          <div class="show-info">
+            <div class="show-title">Zoë Modiga — Nomhanda Tour</div>
+            <div class="show-meta">
+              <span class="show-genre-badge badge-jazz">Afro-Jazz</span>
+              <span>Doors 7:30 PM • Main Stage</span>
+            </div>
+          </div>
+          <div class="show-action">
+            <span class="show-price">$40</span>
+            <a href="#" class="btn-ticket">Buy Ticket</a>
+          </div>
+        </div>
+
+        <!-- Show 2 -->
+        <div class="show-item">
+          <div class="show-date">
+            <span class="day">21</span>
+            <span class="month">AUG</span>
+          </div>
+          <div class="show-info">
+            <div class="show-title">Loyiso Gola — Unfiltered Standup</div>
+            <div class="show-meta">
+              <span class="show-genre-badge badge-comedy">Comedy</span>
+              <span>Doors 8:00 PM • Comedy Cellar</span>
+            </div>
+          </div>
+          <div class="show-action">
+            <span class="show-price">$30</span>
+            <a href="#" class="btn-ticket">Buy Ticket</a>
+          </div>
+        </div>
+
+        <!-- Show 3 -->
+        <div class="show-item">
+          <div class="show-date">
+            <span class="day">29</span>
+            <span class="month">AUG</span>
+          </div>
+          <div class="show-info">
+            <div class="show-title">Nduduzo Makhathini Quintet</div>
+            <div class="show-meta">
+              <span class="show-genre-badge badge-jazz">Spiritual Jazz</span>
+              <span>Doors 7:00 PM • Main Stage</span>
+            </div>
+          </div>
+          <div class="show-action">
+            <span class="show-price">$45</span>
+            <a href="#" class="btn-ticket">Buy Ticket</a>
+          </div>
+        </div>
+
+        <!-- Show 4 -->
+        <div class="show-item">
+          <div class="show-date">
+            <span class="day">04</span>
+            <span class="month">SEP</span>
+          </div>
+          <div class="show-info">
+            <div class="show-title">Sun-El Musician — Planet El Live</div>
+            <div class="show-meta">
+              <span class="show-genre-badge badge-soul">Afro-House / Soul</span>
+              <span>Doors 9:00 PM • Club Hall</span>
+            </div>
+          </div>
+          <div class="show-action">
+            <span class="show-price">$35</span>
+            <a href="#" class="btn-ticket">Buy Ticket</a>
+          </div>
+        </div>
+
+        <!-- Show 5 -->
+        <div class="show-item">
+          <div class="show-date">
+            <span class="day">12</span>
+            <span class="month">SEP</span>
+          </div>
+          <div class="show-info">
+            <div class="show-title">Celeste Ntuli & Friends</div>
+            <div class="show-meta">
+              <span class="show-genre-badge badge-comedy">Comedy Night</span>
+              <span>Doors 8:30 PM • Main Stage</span>
+            </div>
+          </div>
+          <div class="show-action">
+            <span class="show-price">$35</span>
+            <a href="#" class="btn-ticket">Buy Ticket</a>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- View All Shows Link -->
+      <div class="all-shows-footer">
+        <a href="#all-shows" class="btn-view-all">
+          <span>View All Upcoming Shows</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SECTION 5: ABOUT THE FOUNDER -->
+  <section id="founder" class="founder-section">
+    <div class="founder-container">
+      
+      <!-- Left Column: Circular Photo -->
+      <div class="founder-img-wrapper">
+        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=600&q=80" alt="Nomakhosini Dyosopu" class="founder-img" />
+      </div>
+
+      <!-- Right Column: Paragraph & Story -->
+      <div class="founder-content">
+        <div class="founder-subtitle">Vision & Leadership</div>
+        <h2 class="founder-title">Nomakhosini Dyosopu</h2>
+        <div class="founder-bio">
+          <p>Founded by creative visionary Nomakhosini Dyosopu, <strong>The Neon Spot</strong> was built on a simple yet transformative vision: to create a sanctuary where world-class musical artistry and electrifying live comedy intersect.</p>
+          <p>With over a decade of dedication to African arts and nightlife culture, Nomakhosini curated a space that celebrates local soundscapes while providing artists with an intimate stage. Her commitment to sound perfection, inclusive space, and raw talent continues to make The Neon Spot an iconic cultural hub.</p>
+        </div>
+        <div class="founder-signature">— Nomakhosini Dyosopu, Founder & Creative Director</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-container">
+      
+      <div class="footer-brand">
+        <div class="logo">THE NEON SPOT</div>
+        <p>The premier destination for live Afro-Jazz, Soul, Hip-Hop, and Standup Comedy. Experiential nights, world-class sound, unforgettable moments.</p>
+      </div>
+
+      <div>
+        <h4 class="footer-title">Quick Links</h4>
+        <ul class="footer-links">
+          <li><a href="#hero">Next Act</a></li>
+          <li><a href="#genres">Genres</a></li>
+          <li><a href="#highlights">Highlights</a></li>
+          <li><a href="#shows">Upcoming Shows</a></li>
+          <li><a href="#founder">About Founder</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="footer-title">Visit Us</h4>
+        <ul class="footer-links">
+          <li><a href="#">74 Long Street, Cape Town</a></li>
+          <li><a href="#">Doors Open: 7:00 PM Wed-Sun</a></li>
+          <li><a href="#">info@theneonspot.com</a></li>
+          <li><a href="#">+27 (0) 21 555 0199</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <span>&copy; 2026 The Neon Spot. All rights reserved.</span>
+      <span>Designed for authentic live entertainment.</span>
+    </div>
+  </footer>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    const playlist = [
+      {
+        title: "Zoë Modiga — Live at The Neon Spot",
+        category: "Featured Concert Highlights",
+        src: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4"
+      },
+      {
+        title: "Marcus Vance — Uncensored Standup",
+        category: "Comedy Highlights",
+        src: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4"
+      },
+      {
+        title: "The Electric Brass — Late Night Jam",
+        category: "Jazz Fusion Session",
+        src: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
+      }
+    ];
+
+    let currentTrack = 0;
+    let isUserPlaying = false;
+
+    const video = document.getElementById('clubVideo');
+    const videoSource = document.getElementById('videoSource');
+    const container = document.getElementById('videoContainer');
+    const bigPlayBtn = document.getElementById('bigPlayBtn');
+    const togglePlayBtn = document.getElementById('togglePlayBtn');
+    const playIcon = document.getElementById('playIcon');
+    const pauseIcon = document.getElementById('pauseIcon');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const videoTitle = document.getElementById('videoTitle');
+    const videoCategory = document.getElementById('videoCategory');
+
+    function playVideo() {
+      video.play();
+      isUserPlaying = true;
+      container.classList.add('playing');
+      playIcon.style.display = 'none';
+      pauseIcon.style.display = 'block';
+    }
+
+    function pauseVideo() {
+      video.pause();
+      isUserPlaying = false;
+      container.classList.remove('playing');
+      playIcon.style.display = 'block';
+      pauseIcon.style.display = 'none';
+    }
+
+    function togglePlay() {
+      if (video.paused) {
+        playVideo();
+      } else {
+        pauseVideo();
+      }
+    }
+
+    bigPlayBtn.addEventListener('click', playVideo);
+    togglePlayBtn.addEventListener('click', togglePlay);
+
+    function loadTrack(index) {
+      currentTrack = (index + playlist.length) % playlist.length;
+      const track = playlist[currentTrack];
+      
+      videoSource.src = track.src;
+      videoTitle.textContent = track.title;
+      videoCategory.textContent = track.category;
+      
+      video.load();
+      if (isUserPlaying) {
+        playVideo();
+      }
+    }
+
+    prevBtn.addEventListener('click', () => loadTrack(currentTrack - 1));
+    nextBtn.addEventListener('click', () => loadTrack(currentTrack + 1));
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting && !video.paused) {
+          video.pause();
+          container.classList.remove('playing');
+        } else if (entry.isIntersecting && isUserPlaying) {
+          video.play();
+          container.classList.add('playing');
+        }
+      });
+    }, { threshold: 0.5 });
+
+    observer.observe(document.getElementById('highlights'));
+
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    container.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    container.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      handleSwipe();
+    }, { passive: true });
+
+    function handleSwipe() {
+      const swipeDistance = touchEndX - touchStartX;
+      if (Math.abs(swipeDistance) > 50) {
+        if (swipeDistance < 0) {
+          loadTrack(currentTrack + 1);
+        } else {
+          loadTrack(currentTrack - 1);
+        }
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,243 @@
+---
+// Upcoming Shows - dark bg, clean list, no badges
+const shows = [
+  {
+    date: '15 Aug',
+    title: 'Zoë Modiga',
+    sub: 'Nomhanda Tour',
+    time: '7:30 PM',
+    price: 'R350',
+  },
+  {
+    date: '21 Aug',
+    title: 'Loyiso Gola',
+    sub: 'Unfiltered',
+    time: '8:00 PM',
+    price: 'R250',
+  },
+  {
+    date: '29 Aug',
+    title: 'Nduduzo Makhathini',
+    sub: 'Quintet',
+    time: '7:00 PM',
+    price: 'R400',
+  },
+  {
+    date: '04 Sep',
+    title: 'Sun-El Musician',
+    sub: 'Planet El Live',
+    time: '9:00 PM',
+    price: 'R300',
+  },
+  {
+    date: '12 Sep',
+    title: 'Celeste Ntuli & Friends',
+    sub: 'Comedy Night',
+    time: '8:30 PM',
+    price: 'R280',
+  },
+];
+---
+
+<section id="shows" class="section-fullscreen shows-section">
+  <div class="shows-container">
+    <div class="shows-header">
+      <span class="shows-label">Upcoming</span>
+      <h2 class="shows-title heading-display">Shows</h2>
+    </div>
+
+    <div class="shows-list">
+      {shows.map((show) => (
+        <a href="#" class="show-item">
+          <div class="show-left">
+            <span class="show-date">{show.date}</span>
+            <div class="show-info">
+              <span class="show-title">{show.title}</span>
+              <span class="show-sub">{show.sub}</span>
+            </div>
+          </div>
+          <div class="show-right">
+            <span class="show-time">{show.time}</span>
+            <span class="show-price">{show.price}</span>
+            <span class="show-arrow">&#8599;</span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .shows-section {
+    background: var(--color-bg-alt);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-xl) var(--space-lg);
+  }
+
+  .shows-container {
+    width: 100%;
+    max-width: 900px;
+  }
+
+  .shows-header {
+    margin-bottom: var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .shows-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-text-subtle);
+  }
+
+  .shows-title {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    color: var(--color-white);
+  }
+
+  .shows-list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .show-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem 0;
+    border-top: 1px solid var(--color-border);
+    transition: all 0.2s var(--ease-out);
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .show-item:last-child {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .show-item:hover {
+    padding-left: 1rem;
+  }
+
+  .show-item:hover .show-title {
+    color: var(--color-accent);
+  }
+
+  .show-item:hover .show-arrow {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+
+  .show-left {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .show-date {
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--color-text-subtle);
+    min-width: 60px;
+  }
+
+  .show-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+  }
+
+  .show-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--color-white);
+    transition: color 0.2s;
+  }
+
+  .show-sub {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+  }
+
+  .show-right {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .show-time {
+    font-size: 0.85rem;
+    color: var(--color-text-subtle);
+  }
+
+  .show-price {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-white);
+  }
+
+  .show-arrow {
+    font-size: 1.2rem;
+    color: var(--color-accent);
+    opacity: 0;
+    transform: translate(-4px, 4px);
+    transition: all 0.2s var(--ease-out);
+  }
+
+  @media (max-width: 768px) {
+    .shows-section {
+      padding: var(--space-lg) var(--space-md);
+      min-height: auto;
+    }
+
+    .show-item {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 1.25rem 0;
+    }
+
+    .show-left {
+      flex-direction: row;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .show-right {
+      width: 100%;
+      justify-content: space-between;
+      padding-left: 0;
+    }
+
+    .show-time {
+      display: none;
+    }
+
+    .show-arrow {
+      opacity: 1;
+      transform: none;
+    }
+
+    .show-item:hover {
+      padding-left: 0;
+    }
+  }
+
+  @media (max-width: 380px) {
+    .shows-section {
+      padding: var(--space-lg) 1.25rem;
+    }
+
+    .show-title {
+      font-size: 1rem;
+    }
+  }
+</style>

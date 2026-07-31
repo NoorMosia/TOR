@@ -1,0 +1,184 @@
+/* =============================================================================
+   The One Room — Global Styles
+   Street/culture-forward. Raw. Textured. Big photography.
+   ============================================================================= */
+
+/* --- RESET --- */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* --- CSS VARIABLES --- */
+:root {
+  /* Colors — warm, earthy, grounded */
+  --color-bg: #111110;
+  --color-bg-alt: #1a1918;
+  --color-surface: #242320;
+  --color-white: #f5f0eb;
+  --color-text: #f5f0eb;
+  --color-text-muted: #a8a29e;
+  --color-text-subtle: #78716c;
+  --color-accent: #e54d2e;
+  --color-accent-muted: #c4391a;
+  --color-warm: #d4a574;
+  --color-border: #2e2c2a;
+
+  /* Typography */
+  --font-display: 'Clash Display', 'Inter', sans-serif;
+  --font-body: 'Satoshi', 'Inter', sans-serif;
+
+  /* Spacing */
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 2rem;
+  --space-lg: 4rem;
+  --space-xl: 8rem;
+
+  /* Transitions */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* --- BASE --- */
+html {
+  scroll-behavior: smooth;
+  font-family: var(--font-body);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 16px;
+}
+
+body {
+  overflow-x: hidden;
+  line-height: 1.6;
+  /* Subtle grain texture */
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+}
+
+img,
+video {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+/* --- FULLSCREEN SECTION BASE --- */
+.section-fullscreen {
+  width: 100vw;
+  min-height: 100vh;
+  max-width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+/* --- TYPOGRAPHY --- */
+.heading-display {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+
+/* --- BUTTONS --- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.9rem 2rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  font-family: var(--font-body);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: all 0.3s var(--ease-out);
+  cursor: pointer;
+  border: none;
+}
+
+.btn-primary {
+  background-color: var(--color-accent);
+  color: var(--color-white);
+}
+
+.btn-primary:hover {
+  background-color: var(--color-white);
+  color: var(--color-bg);
+  transform: translateY(-1px);
+}
+
+.btn-outline {
+  background-color: transparent;
+  color: var(--color-white);
+  border: 1px solid var(--color-border);
+}
+
+.btn-outline:hover {
+  border-color: var(--color-white);
+  transform: translateY(-1px);
+}
+
+/* --- ANIMATION UTILITIES --- */
+.reveal {
+  will-change: opacity, transform;
+}
+
+.reveal-scale {
+  will-change: opacity, transform;
+}
+
+/* --- DIVIDER --- */
+.divider {
+  width: 100%;
+  height: 1px;
+  background: var(--color-border);
+}
+
+/* --- RESPONSIVE HELPERS --- */
+@media (max-width: 768px) {
+  html {
+    font-size: 15px;
+  }
+
+  .section-fullscreen {
+    min-height: auto;
+  }
+}
+
+/* --- SAFE AREA (notch phones) --- */
+@supports (padding: env(safe-area-inset-top)) {
+  body {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+}
+
+/* --- PREVENT HORIZONTAL OVERFLOW --- */
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}

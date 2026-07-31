@@ -1,0 +1,152 @@
+---
+// Navbar - simple, no glow, no glass
+---
+
+<nav class="navbar" id="navbar">
+  <a href="/" class="nav-logo">The One Room</a>
+
+  <button class="nav-toggle" id="mobileToggle" aria-label="Menu">
+    <span></span>
+    <span></span>
+  </button>
+
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#shows">Shows</a></li>
+    <li><a href="#highlights">Highlights</a></li>
+    <li><a href="#founder">About</a></li>
+    <li><a href="#shows" class="nav-cta">Tickets</a></li>
+  </ul>
+</nav>
+
+<script>
+  const toggle = document.getElementById('mobileToggle');
+  const navLinks = document.getElementById('navLinks');
+
+  toggle?.addEventListener('click', () => {
+    navLinks?.classList.toggle('open');
+    toggle.classList.toggle('active');
+  });
+
+  navLinks?.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', () => {
+      navLinks.classList.remove('open');
+      toggle?.classList.remove('active');
+    });
+  });
+</script>
+
+<style>
+  .navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 2rem;
+    z-index: 100;
+    mix-blend-mode: difference;
+  }
+
+  .nav-logo {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--color-white);
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--color-white);
+    letter-spacing: 0.02em;
+    transition: opacity 0.2s;
+  }
+
+  .nav-links a:hover {
+    opacity: 0.6;
+  }
+
+  .nav-cta {
+    padding: 0.5rem 1rem;
+    border: 1px solid currentColor;
+    font-size: 0.8rem !important;
+    letter-spacing: 0.06em !important;
+    text-transform: uppercase;
+  }
+
+  /* Mobile toggle */
+  .nav-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    padding: 8px;
+    z-index: 101;
+  }
+
+  .nav-toggle span {
+    width: 22px;
+    height: 1.5px;
+    background: var(--color-white);
+    transition: all 0.3s var(--ease-out);
+  }
+
+  .nav-toggle.active span:first-child {
+    transform: rotate(45deg) translate(3px, 3px);
+  }
+
+  .nav-toggle.active span:last-child {
+    transform: rotate(-45deg) translate(3px, -3px);
+  }
+
+  @media (max-width: 768px) {
+    .navbar {
+      padding: 1rem 1.25rem;
+      mix-blend-mode: normal;
+    }
+
+    .nav-toggle {
+      display: flex;
+    }
+
+    .nav-links {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100dvh;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 2.5rem;
+      background: var(--color-bg);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s var(--ease-out);
+    }
+
+    .nav-links.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .nav-links a {
+      font-size: 1.5rem;
+      font-weight: 500;
+    }
+
+    .nav-cta {
+      font-size: 1rem !important;
+      padding: 0.75rem 1.5rem;
+    }
+  }
+</style>

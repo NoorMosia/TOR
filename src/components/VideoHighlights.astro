@@ -1,0 +1,375 @@
+---
+// Video highlights section - fullscreen, stripped back
+const playlist = [
+  {
+    title: 'Zoë Modiga — Live',
+    category: 'Concert',
+    src: '/videos/landscape.mp4',
+    poster: '/images/posters/landscape-poster.jpg',
+  },
+  {
+    title: 'Comedy Night',
+    category: 'Standup',
+    src: '/videos/landscape2.mp4',
+    poster: '/images/posters/landscape2-poster.jpg',
+  },
+  {
+    title: 'Late Night Jazz',
+    category: 'Session',
+    src: '/videos/portrait1.mp4',
+    poster: '/images/posters/portrait1-poster.jpg',
+  },
+];
+---
+
+<section id="highlights" class="section-fullscreen video-section">
+  <div class="video-container" id="videoContainer" data-playlist={JSON.stringify(playlist)}>
+    <div class="video-overlay"></div>
+
+    <div class="video-info">
+      <span class="video-cat" id="videoCategory">{playlist[0].category}</span>
+      <h3 id="videoTitle">{playlist[0].title}</h3>
+    </div>
+
+    <video
+      id="clubVideo"
+      class="video-element"
+      playsinline
+      loop
+      preload="metadata"
+    >
+      <source id="videoSource" src={playlist[0].src} type="video/mp4" />
+    </video>
+
+    <button class="big-play-btn" id="bigPlayBtn" aria-label="Play">
+      <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+    </button>
+
+    <div class="nav-arrows">
+      <button class="arrow-btn arrow-prev" id="prevBtnAlt" aria-label="Previous">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <button class="arrow-btn arrow-next" id="nextBtnAlt" aria-label="Next">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+
+    <div class="controls-bar">
+      <button class="ctrl-btn" id="prevBtn" aria-label="Previous">
+        <svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+      </button>
+      <button class="ctrl-btn" id="togglePlayBtn" aria-label="Play/Pause">
+        <svg id="pauseIcon" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+        <svg id="playIcon" viewBox="0 0 24 24" style="display: none;"><path d="M8 5v14l11-7z"/></svg>
+      </button>
+      <button class="ctrl-btn" id="nextBtn" aria-label="Next">
+        <svg viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+      </button>
+    </div>
+  </div>
+</section>
+
+<script>
+  const container = document.getElementById('videoContainer') as HTMLElement;
+  const playlistData = JSON.parse(container?.dataset.playlist || '[]');
+
+  let currentTrack = 0;
+  let isUserPlaying = false;
+
+  const video = document.getElementById('clubVideo') as HTMLVideoElement;
+  const videoSource = document.getElementById('videoSource') as HTMLSourceElement;
+  const bigPlayBtn = document.getElementById('bigPlayBtn');
+  const togglePlayBtn = document.getElementById('togglePlayBtn');
+  const playIcon = document.getElementById('playIcon') as HTMLElement;
+  const pauseIcon = document.getElementById('pauseIcon') as HTMLElement;
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const videoTitle = document.getElementById('videoTitle');
+  const videoCategory = document.getElementById('videoCategory');
+
+  function playVideo() {
+    video.play();
+    isUserPlaying = true;
+    container.classList.add('playing');
+    playIcon.style.display = 'none';
+    pauseIcon.style.display = 'block';
+  }
+
+  function pauseVideo() {
+    video.pause();
+    isUserPlaying = false;
+    container.classList.remove('playing');
+    playIcon.style.display = 'block';
+    pauseIcon.style.display = 'none';
+  }
+
+  bigPlayBtn?.addEventListener('click', playVideo);
+  togglePlayBtn?.addEventListener('click', () => video.paused ? playVideo() : pauseVideo());
+
+  function loadTrack(index: number) {
+    currentTrack = (index + playlistData.length) % playlistData.length;
+    const track = playlistData[currentTrack];
+    videoSource.src = track.src;
+    if (videoTitle) videoTitle.textContent = track.title;
+    if (videoCategory) videoCategory.textContent = track.category;
+    video.load();
+    if (isUserPlaying) playVideo();
+  }
+
+  prevBtn?.addEventListener('click', () => loadTrack(currentTrack - 1));
+  nextBtn?.addEventListener('click', () => loadTrack(currentTrack + 1));
+
+  // Alt prev/next arrows (visible when not playing)
+  const prevBtnAlt = document.getElementById('prevBtnAlt');
+  const nextBtnAlt = document.getElementById('nextBtnAlt');
+  prevBtnAlt?.addEventListener('click', () => loadTrack(currentTrack - 1));
+  nextBtnAlt?.addEventListener('click', () => loadTrack(currentTrack + 1));
+
+  // Auto-pause when out of viewport
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting && !video.paused) {
+        video.pause();
+        container.classList.remove('playing');
+      } else if (entry.isIntersecting && isUserPlaying) {
+        video.play();
+        container.classList.add('playing');
+      }
+    });
+  }, { threshold: 0.5 });
+
+  observer.observe(document.getElementById('highlights')!);
+
+  // Touch swipe
+  let touchStartX = 0;
+  container.addEventListener('touchstart', (e: TouchEvent) => {
+    touchStartX = e.changedTouches[0].screenX;
+  }, { passive: true });
+
+  container.addEventListener('touchend', (e: TouchEvent) => {
+    const diff = e.changedTouches[0].screenX - touchStartX;
+    if (Math.abs(diff) > 50) loadTrack(diff < 0 ? currentTrack + 1 : currentTrack - 1);
+  }, { passive: true });
+</script>
+
+<style>
+  .video-section {
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .video-container {
+    width: 100%;
+    height: 100vh;
+    position: relative;
+  }
+
+  .video-element {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: #000;
+  }
+
+  .video-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.3);
+    pointer-events: none;
+    z-index: 2;
+    transition: background 0.4s;
+  }
+
+  .video-container.playing .video-overlay {
+    background: rgba(0, 0, 0, 0.1);
+  }
+
+  .video-info {
+    position: absolute;
+    bottom: 6rem;
+    left: 2.5rem;
+    z-index: 10;
+  }
+
+  .video-cat {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    margin-bottom: 0.3rem;
+  }
+
+  .video-info h3 {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-white);
+  }
+
+  .big-play-btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80px;
+    height: 80px;
+    background: var(--color-white);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    transition: all 0.3s var(--ease-out);
+  }
+
+  .big-play-btn:hover {
+    transform: translate(-50%, -50%) scale(1.08);
+  }
+
+  .big-play-btn svg {
+    width: 28px;
+    height: 28px;
+    fill: var(--color-bg);
+    margin-left: 3px;
+  }
+
+  .video-container.playing .big-play-btn {
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+
+  /* Nav arrows — visible when NOT playing */
+  .nav-arrows {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    transform: translateY(-50%);
+    display: flex;
+    justify-content: space-between;
+    padding: 0 1.5rem;
+    z-index: 10;
+    pointer-events: none;
+    transition: opacity 0.3s var(--ease-out);
+  }
+
+  .arrow-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(17, 17, 16, 0.6);
+    backdrop-filter: blur(4px);
+    border: 1px solid var(--color-border);
+    color: var(--color-white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: auto;
+    transition: all 0.2s var(--ease-out);
+  }
+
+  .arrow-btn:hover {
+    background: rgba(17, 17, 16, 0.9);
+    border-color: var(--color-text-muted);
+  }
+
+  .arrow-btn svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .video-container.playing .nav-arrows {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .controls-bar {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    background: rgba(17, 17, 16, 0.8);
+    backdrop-filter: blur(8px);
+    padding: 0.6rem 1.5rem;
+    border-radius: 100px;
+    border: 1px solid var(--color-border);
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s var(--ease-out);
+  }
+
+  .video-container.playing .controls-bar {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .ctrl-btn {
+    color: var(--color-text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s;
+  }
+
+  .ctrl-btn:hover {
+    color: var(--color-white);
+  }
+
+  .ctrl-btn svg {
+    width: 22px;
+    height: 22px;
+    fill: currentColor;
+  }
+
+  @media (max-width: 768px) {
+    .video-section {
+      min-height: auto;
+    }
+
+    .video-container {
+      height: 56.25vw;
+      min-height: 250px;
+    }
+
+    .video-info {
+      bottom: auto;
+      top: 1rem;
+      left: 1.25rem;
+    }
+
+    .video-info h3 {
+      font-size: 1.1rem;
+    }
+
+    .big-play-btn {
+      width: 60px;
+      height: 60px;
+    }
+
+    .big-play-btn svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .controls-bar {
+      bottom: 1rem;
+      gap: 1.25rem;
+      padding: 0.5rem 1.25rem;
+    }
+
+    .ctrl-btn svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+</style>

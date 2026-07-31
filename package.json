@@ -1,0 +1,31 @@
+{
+  "name": "the-one-room",
+  "version": "1.0.0",
+  "description": "The One Room venue website",
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "test": "vitest run"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "fast-check": "^4.9.0",
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.10"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.3",
+    "@astrojs/vercel": "^11.0.4",
+    "@supabase/supabase-js": "^2.111.0",
+    "astro": "^7.1.6",
+    "motion": "^12.43.0"
+  },
+  "allowScripts": {
+    "esbuild@0.28.1": true
+  }
+}
