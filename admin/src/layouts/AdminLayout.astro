@@ -1,0 +1,140 @@
+---
+import '../styles/admin.css';
+
+interface Props {
+  title?: string;
+  section?: string;
+}
+
+const { title = 'Admin', section = '' } = Astro.props;
+
+// Auth is handled by middleware (src/middleware.ts)
+const user = Astro.locals.user ?? { email: '' };
+
+const nav = [
+  {
+    label: 'Content',
+    items: [
+      { href: '/dashboard',       label: 'Dashboard',    icon: 'grid' },
+      { href: '/events',          label: 'Events',       icon: 'calendar' },
+      { href: '/vibes',           label: 'The Room',     icon: 'image' },
+      { href: '/videos',          label: 'Videos',       icon: 'play' },
+    ],
+  },
+  {
+    label: 'Settings',
+    items: [
+      { href: '/founder',         label: 'About',        icon: 'user' },
+      { href: '/venue',           label: 'Venue',        icon: 'map-pin' },
+    ],
+  },
+];
+
+const icons: Record<string, string> = {
+  grid:      '<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>',
+  calendar:  '<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>',
+  image:     '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>',
+  play:      '<polygon points="5 3 19 12 5 21 5 3"/>',
+  user:      '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+  'map-pin': '<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>',
+};
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title} — TOR Admin</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&f[]=satoshi@400,500,600,700&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <div class="admin-shell">
+
+      <!-- Sidebar -->
+      <aside class="admin-sidebar">
+        <div class="sidebar-brand">
+          <a href="/dashboard">The One Room</a>
+          <span>Admin</span>
+        </div>
+
+        <nav class="sidebar-nav">
+          {nav.map((group) => (
+            <>
+              <span class="sidebar-section-label">{group.label}</span>
+              {group.items.map((item) => (
+                <a
+                  href={item.href}
+                  class={section === item.href ? 'active' : ''}
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" set:html={icons[item.icon]} />
+                  {item.label}
+                </a>
+              ))}
+            </>
+          ))}
+        </nav>
+
+        <div class="sidebar-footer">
+          <p style="font-size:0.75rem; color:var(--color-text-subtle); margin-bottom:0.5rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{user.email}</p>
+          <a href="/api/logout">Sign out</a>
+        </div>
+      </aside>
+
+      <!-- Main -->
+      <main class="admin-main">
+        <div class="admin-topbar">
+          <h1>{title}</h1>
+          <div class="topbar-right">
+            <a href="https://theoneroom.co.za" target="_blank" rel="noopener" class="topbar-meta">theoneroom.co.za ↗</a>
+            <button class="btn btn-secondary btn-sm" id="publishBtn">Publish site</button>
+          </div>
+        </div>
+
+        <div class="admin-content">
+          <slot />
+        </div>
+      </main>
+
+    </div>
+
+    <!-- Toast container (used by inline scripts on each page) -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+      // Global toast helper
+      (window as any).showToast = (msg: string, type = 'success') => {
+        const el = document.getElementById('toast')!;
+        el.textContent = msg;
+        el.className = `toast ${type} show`;
+        setTimeout(() => { el.className = 'toast'; }, 3000);
+      };
+
+      // Publish button
+      document.getElementById('publishBtn')?.addEventListener('click', async () => {
+        const btn = document.getElementById('publishBtn') as HTMLButtonElement;
+        btn.disabled = true;
+        btn.textContent = 'Publishing…';
+        try {
+          const res = await fetch('/api/deploy', { method: 'POST' });
+          const json = await res.json();
+          if (json.ok) {
+            (window as any).showToast('Deploy triggered — site rebuilding', 'success');
+          } else {
+            (window as any).showToast(json.error ?? 'Deploy failed', 'error');
+          }
+        } catch {
+          (window as any).showToast('Deploy request failed', 'error');
+        } finally {
+          btn.disabled = false;
+          btn.textContent = 'Publish site';
+        }
+      });
+    </script>
+  </body>
+</html>

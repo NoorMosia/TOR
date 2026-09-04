@@ -1,0 +1,258 @@
+---
+import AdminLayout from '../layouts/AdminLayout.astro';
+import { getSessionClient } from '../lib/auth';
+
+const supabase = getSessionClient(Astro.cookies);
+
+// Fetch summary counts in parallel
+const [
+  { count: totalEvents },
+  { count: upcomingCount },
+  { count: vibesCount },
+  { count: videosCount },
+  { data: featuredEvent },
+  { data: nextEvents },
+] = await Promise.all([
+  supabase.from('events').select('*', { count: 'exact', head: true }),
+  supabase.from('events').select('*', { count: 'exact', head: true })
+    .gte('date', new Date().toISOString().split('T')[0]),
+  supabase.from('vibes').select('*', { count: 'exact', head: true }),
+  supabase.from('videos').select('*', { count: 'exact', head: true }),
+  supabase.from('events').select('title,artist,date,time,price')
+    .eq('is_featured', true).limit(1).maybeSingle(),
+  supabase.from('events').select('id,title,artist,date,time,price')
+    .gte('date', new Date().toISOString().split('T')[0])
+    .order('date', { ascending: true })
+    .limit(5),
+]);
+
+function fmtDate(d: string) {
+  return new Date(d + 'T00:00:00').toLocaleDateString('en-ZA', {
+    weekday: 'short', day: 'numeric', month: 'short',
+  });
+}
+---
+
+<AdminLayout title="Dashboard" section="/dashboard">
+
+  <!-- Stats row -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <span class="stat-label">Total Events</span>
+      <span class="stat-value">{totalEvents ?? 0}</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-label">Upcoming</span>
+      <span class="stat-value">{upcomingCount ?? 0}</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-label">Vibe Cards</span>
+      <span class="stat-value">{vibesCount ?? 0}</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-label">Videos</span>
+      <span class="stat-value">{videosCount ?? 0}</span>
+    </div>
+  </div>
+
+  <!-- Featured event -->
+  <div class="section-block">
+    <div class="section-header">
+      <h2 class="section-title">Hero Banner</h2>
+      <a href="/events" class="btn btn-secondary btn-sm">Change</a>
+    </div>
+    {featuredEvent ? (
+      <div class="featured-card">
+        <div>
+          <p class="featured-artist">{featuredEvent.artist ?? featuredEvent.title}</p>
+          <p class="featured-meta">{fmtDate(featuredEvent.date)} · {featuredEvent.time} · {featuredEvent.price}</p>
+        </div>
+        <span class="badge badge-featured">Featured</span>
+      </div>
+    ) : (
+      <div class="empty-state" style="padding:2rem 0;">
+        <p>No event is set as featured. <a href="/events">Set one →</a></p>
+      </div>
+    )}
+  </div>
+
+  <!-- Next up -->
+  <div class="section-block">
+    <div class="section-header">
+      <h2 class="section-title">Upcoming Shows</h2>
+      <a href="/events/new" class="btn btn-primary btn-sm">+ Add show</a>
+    </div>
+
+    {nextEvents && nextEvents.length > 0 ? (
+      <div class="card" style="padding:0; overflow:hidden;">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Artist</th>
+              <th>Time</th>
+              <th>Price</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {nextEvents.map((e) => (
+              <tr>
+                <td>{fmtDate(e.date)}</td>
+                <td class="td-primary">{e.artist ?? e.title}</td>
+                <td>{e.time}</td>
+                <td>{e.price}</td>
+                <td class="td-actions">
+                  <a href={`/events/${e.id}`}>Edit</a>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    ) : (
+      <div class="empty-state" style="padding:2rem 0;">
+        <p>No upcoming events. <a href="/events/new">Add the first one →</a></p>
+      </div>
+    )}
+  </div>
+
+  <!-- Quick links -->
+  <div class="section-block">
+    <h2 class="section-title" style="margin-bottom:1rem;">Edit Content</h2>
+    <div class="quick-links">
+      <a href="/vibes" class="quick-link">
+        <span class="ql-label">The Room</span>
+        <span class="ql-sub">What happens here cards</span>
+      </a>
+      <a href="/videos" class="quick-link">
+        <span class="ql-label">Videos</span>
+        <span class="ql-sub">Highlight reel playlist</span>
+      </a>
+      <a href="/founder" class="quick-link">
+        <span class="ql-label">About</span>
+        <span class="ql-sub">Founder quote &amp; bio</span>
+      </a>
+      <a href="/venue" class="quick-link">
+        <span class="ql-label">Venue</span>
+        <span class="ql-sub">Address, hours &amp; contact</span>
+      </a>
+    </div>
+  </div>
+
+</AdminLayout>
+
+<style>
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .stat-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .stat-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-text-subtle);
+  }
+
+  .stat-value {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--color-white);
+    line-height: 1;
+  }
+
+  .section-block {
+    margin-bottom: 2.5rem;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+
+  .section-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-text-subtle);
+  }
+
+  .featured-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .featured-artist {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-white);
+    margin-bottom: 0.2rem;
+  }
+
+  .featured-meta {
+    font-size: 0.825rem;
+    color: var(--color-text-muted);
+  }
+
+  .quick-links {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+
+  .quick-link {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    transition: border-color 0.15s, background 0.15s;
+    text-decoration: none;
+  }
+
+  .quick-link:hover {
+    border-color: var(--color-border-focus);
+    background: var(--color-surface-high);
+  }
+
+  .ql-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-white);
+  }
+
+  .ql-sub {
+    font-size: 0.775rem;
+    color: var(--color-text-subtle);
+  }
+
+  @media (max-width: 768px) {
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .quick-links { grid-template-columns: 1fr; }
+  }
+</style>

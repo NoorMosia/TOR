@@ -1,11 +1,10 @@
 ---
-// Past events / vibe section — horizontal scroll of real moments
-const vibes = [
-  { image: '/images/comedy1.jpg', caption: 'Comedy Night', sub: 'Loyiso Gola' },
-  { image: '/images/jazz.jpg', caption: 'Jazz Sessions', sub: 'Live Brass Fridays' },
-  { image: '/images/comedy2.jpg', caption: 'Open Mic', sub: 'Every Wednesday' },
-  { image: '/images/comedy3.jpg', caption: 'Soul Sundays', sub: 'Neo-Soul & R&B' },
-];
+import { supabase } from '../lib/supabase';
+
+const { data: vibes } = await supabase
+  .from('vibes')
+  .select('id, caption, sub, image_url')
+  .order('sort_order', { ascending: true });
 ---
 
 <section id="vibes" class="section-fullscreen vibes-section">
@@ -15,14 +14,14 @@ const vibes = [
   </div>
 
   <div class="vibes-scroll">
-    {vibes.map((vibe) => (
+    {vibes && vibes.map((vibe) => (
       <div class="vibe-card">
         <div class="vibe-image">
-          <img src={vibe.image} alt={vibe.caption} loading="lazy" />
+          <img src={vibe.image_url ?? ''} alt={vibe.caption} loading="lazy" />
         </div>
         <div class="vibe-info">
           <span class="vibe-caption">{vibe.caption}</span>
-          <span class="vibe-sub">{vibe.sub}</span>
+          {vibe.sub && <span class="vibe-sub">{vibe.sub}</span>}
         </div>
       </div>
     ))}

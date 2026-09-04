@@ -1,0 +1,221 @@
+---
+import AdminLayout from '../layouts/AdminLayout.astro';
+import { getSessionClient } from '../lib/auth';
+
+const supabase = getSessionClient(Astro.cookies);
+let saved = false;
+let errors: Record<string, string> = {};
+
+if (Astro.request.method === 'POST') {
+  const form = await Astro.request.formData();
+  const action = form.get('_action')?.toString();
+
+  if (action === 'delete') {
+    const id = form.get('id')?.toString();
+    if (id) await supabase.from('vibes').delete().eq('id', id);
+
+  } else if (action === 'add') {
+    const caption = form.get('caption')?.toString().trim() ?? '';
+    if (!caption) {
+      errors.caption = 'Caption is required';
+    } else {
+      const { count } = await supabase.from('vibes').select('*', { count: 'exact', head: true });
+      await supabase.from('vibes').insert({
+        caption,
+        sub:       form.get('sub')?.toString().trim()       || null,
+        image_url: form.get('image_url')?.toString().trim() || null,
+        sort_order: count ?? 0,
+      });
+      saved = true;
+    }
+
+  } else if (action === 'update') {
+    const id      = form.get('id')?.toString();
+    const caption = form.get('caption')?.toString().trim() ?? '';
+    if (id && caption) {
+      await supabase.from('vibes').update({
+        caption,
+        sub:       form.get('sub')?.toString().trim()       || null,
+        image_url: form.get('image_url')?.toString().trim() || null,
+        sort_order: parseInt(form.get('sort_order')?.toString() ?? '0', 10),
+      }).eq('id', id);
+      saved = true;
+    }
+  }
+}
+
+const { data: vibes } = await supabase
+  .from('vibes')
+  .select('*')
+  .order('sort_order', { ascending: true });
+---
+
+<AdminLayout title="The Room" section="/vibes">
+
+  {saved && <p class="save-notice">✓ Changes saved</p>}
+
+  <!-- Existing cards -->
+  <div class="section-block">
+    <div class="section-header">
+      <h2 class="section-title">Current cards ({vibes?.length ?? 0})</h2>
+    </div>
+
+    {vibes && vibes.length > 0 ? (
+      <div class="vibes-list">
+        {vibes.map((vibe, i) => (
+          <form method="POST" class="vibe-row card">
+            <input type="hidden" name="_action" value="update" />
+            <input type="hidden" name="id" value={vibe.id} />
+
+            {vibe.image_url && (
+              <div class="vibe-thumb">
+                <img src={vibe.image_url} alt={vibe.caption} />
+              </div>
+            )}
+
+            <div class="vibe-fields">
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Caption</label>
+                  <input type="text" name="caption" value={vibe.caption} required />
+                </div>
+                <div class="form-group">
+                  <label>Sub-label</label>
+                  <input type="text" name="sub" value={vibe.sub ?? ''} placeholder="e.g. Every Wednesday" />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Image URL</label>
+                  <input type="text" name="image_url" value={vibe.image_url ?? ''} placeholder="/images/comedy1.jpg" />
+                </div>
+                <div class="form-group">
+                  <label>Order</label>
+                  <input type="number" name="sort_order" value={vibe.sort_order ?? i} min="0" style="max-width:80px" />
+                </div>
+              </div>
+            </div>
+
+            <div class="vibe-actions">
+              <button type="submit" class="btn btn-primary btn-sm">Save</button>
+              <button
+                type="submit"
+                formaction=""
+                form=""
+                class="btn btn-danger btn-sm delete-vibe-btn"
+                data-id={vibe.id}
+                data-caption={vibe.caption}
+              >Delete</button>
+            </div>
+          </form>
+        ))}
+      </div>
+    ) : (
+      <div class="empty-state"><p>No vibe cards yet. Add one below.</p></div>
+    )}
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- Add new card -->
+  <div class="section-block">
+    <h2 class="section-title" style="margin-bottom:1rem;">Add a card</h2>
+    <form method="POST" class="card">
+      <input type="hidden" name="_action" value="add" />
+      <div class="form-row">
+        <div class="form-group">
+          <label for="new_caption">Caption <span class="req">*</span></label>
+          <input type="text" id="new_caption" name="caption" placeholder="e.g. Jazz Sessions" />
+          {errors.caption && <span class="field-error">{errors.caption}</span>}
+        </div>
+        <div class="form-group">
+          <label for="new_sub">Sub-label</label>
+          <input type="text" id="new_sub" name="sub" placeholder="e.g. Live Brass Fridays" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="new_image_url">Image URL</label>
+        <input type="text" id="new_image_url" name="image_url" placeholder="/images/jazz.jpg" />
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Add card</button>
+      </div>
+    </form>
+  </div>
+
+</AdminLayout>
+
+<!-- Delete uses a separate hidden form to keep the delete action isolated -->
+<form id="delete-vibe-form" method="POST" style="display:none;">
+  <input type="hidden" name="_action" value="delete" />
+  <input type="hidden" name="id" id="delete-vibe-id" />
+</form>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('.delete-vibe-btn').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const caption = btn.dataset.caption!;
+      if (!confirm(`Delete "${caption}"?`)) return;
+      const form = document.getElementById('delete-vibe-form') as HTMLFormElement;
+      const idField = document.getElementById('delete-vibe-id') as HTMLInputElement;
+      idField.value = btn.dataset.id!;
+      form.submit();
+    });
+  });
+</script>
+
+<style>
+  .save-notice {
+    font-size: 0.825rem;
+    color: var(--color-success);
+    margin-bottom: 1.25rem;
+    font-weight: 600;
+  }
+  .section-block { margin-bottom: 2rem; }
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+  .section-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-text-subtle);
+  }
+  .vibes-list { display: flex; flex-direction: column; gap: 1rem; }
+  .vibe-row {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 1.25rem;
+    align-items: start;
+  }
+  .vibe-thumb {
+    width: 72px;
+    height: 96px;
+    border-radius: 4px;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: var(--color-surface-high);
+  }
+  .vibe-thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .vibe-fields { flex: 1; }
+  .vibe-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding-top: 1.5rem;
+  }
+  .req { color: var(--color-accent); }
+  .field-error { font-size: 0.75rem; color: var(--color-error); }
+  .form-actions { display: flex; justify-content: flex-end; margin-top: 0.5rem; }
+
+  @media (max-width: 640px) {
+    .vibe-row { grid-template-columns: 1fr; }
+    .vibe-thumb { width: 100%; height: 140px; }
+    .vibe-actions { flex-direction: row; padding-top: 0; }
+  }
+</style>

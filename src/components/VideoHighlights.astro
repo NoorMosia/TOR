@@ -1,85 +1,86 @@
 ---
-// Video highlights section - fullscreen, stripped back
-const playlist = [
-  {
-    title: 'Zoë Modiga — Live',
-    category: 'Concert',
-    src: '/videos/landscape2.mp4',
-    poster: '/images/posters/landscape2-poster.jpg',
-  },
-  {
-    title: 'Late Night Jazz',
-    category: 'Session',
-    src: '/videos/portrait2.mp4',
-    poster: '/images/posters/portrait2-poster.jpg',
-  },
-];
+import { supabase } from '../lib/supabase';
+
+const { data: videos } = await supabase
+  .from('videos')
+  .select('id, title, category, src, poster')
+  .order('sort_order', { ascending: true });
+
+const playlist = videos ?? [];
 ---
 
 <section id="highlights" class="section-fullscreen video-section">
-  <div class="video-container" id="videoContainer" data-playlist={JSON.stringify(playlist)}>
-    <div class="video-overlay"></div>
+  {playlist.length > 0 ? (
+    <div class="video-container" id="videoContainer" data-playlist={JSON.stringify(playlist)}>
+      <div class="video-overlay"></div>
 
-    <div class="video-info">
-      <span class="video-cat" id="videoCategory">{playlist[0].category}</span>
-      <h3 id="videoTitle">{playlist[0].title}</h3>
+      <div class="video-info">
+        <span class="video-cat" id="videoCategory">{playlist[0].category}</span>
+        <h3 id="videoTitle">{playlist[0].title}</h3>
+      </div>
+
+      <video
+        id="clubVideo"
+        class="video-element"
+        playsinline
+        loop
+        preload="metadata"
+      >
+        <source id="videoSource" src={playlist[0].src} type="video/mp4" />
+      </video>
+
+      <button class="big-play-btn" id="bigPlayBtn" aria-label="Play">
+        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+      </button>
+
+      <div class="nav-arrows">
+        <button class="arrow-btn arrow-prev" id="prevBtnAlt" aria-label="Previous">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <button class="arrow-btn arrow-next" id="nextBtnAlt" aria-label="Next">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+
+      <div class="controls-bar">
+        <button class="ctrl-btn" id="prevBtn" aria-label="Previous">
+          <svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+        </button>
+        <button class="ctrl-btn" id="togglePlayBtn" aria-label="Play/Pause">
+          <svg id="pauseIcon" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+          <svg id="playIcon" viewBox="0 0 24 24" style="display: none;"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <button class="ctrl-btn" id="nextBtn" aria-label="Next">
+          <svg viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+        </button>
+      </div>
     </div>
-
-    <video
-      id="clubVideo"
-      class="video-element"
-      playsinline
-      loop
-      preload="metadata"
-    >
-      <source id="videoSource" src={playlist[0].src} type="video/mp4" />
-    </video>
-
-    <button class="big-play-btn" id="bigPlayBtn" aria-label="Play">
-      <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-    </button>
-
-    <div class="nav-arrows">
-      <button class="arrow-btn arrow-prev" id="prevBtnAlt" aria-label="Previous">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-      </button>
-      <button class="arrow-btn arrow-next" id="nextBtnAlt" aria-label="Next">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-      </button>
+  ) : (
+    <div class="video-empty">
+      <p>No video highlights yet.</p>
     </div>
-
-    <div class="controls-bar">
-      <button class="ctrl-btn" id="prevBtn" aria-label="Previous">
-        <svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
-      </button>
-      <button class="ctrl-btn" id="togglePlayBtn" aria-label="Play/Pause">
-        <svg id="pauseIcon" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-        <svg id="playIcon" viewBox="0 0 24 24" style="display: none;"><path d="M8 5v14l11-7z"/></svg>
-      </button>
-      <button class="ctrl-btn" id="nextBtn" aria-label="Next">
-        <svg viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
-      </button>
-    </div>
-  </div>
+  )}
 </section>
 
 <script>
   const container = document.getElementById('videoContainer') as HTMLElement;
+  if (!container) throw new Error('no container');
+
   const playlistData = JSON.parse(container?.dataset.playlist || '[]');
 
   let currentTrack = 0;
   let isUserPlaying = false;
 
-  const video = document.getElementById('clubVideo') as HTMLVideoElement;
-  const videoSource = document.getElementById('videoSource') as HTMLSourceElement;
-  const bigPlayBtn = document.getElementById('bigPlayBtn');
-  const togglePlayBtn = document.getElementById('togglePlayBtn');
-  const playIcon = document.getElementById('playIcon') as HTMLElement;
-  const pauseIcon = document.getElementById('pauseIcon') as HTMLElement;
-  const prevBtn = document.getElementById('prevBtn');
-  const nextBtn = document.getElementById('nextBtn');
-  const videoTitle = document.getElementById('videoTitle');
-  const videoCategory = document.getElementById('videoCategory');
+  const video        = document.getElementById('clubVideo') as HTMLVideoElement;
+  const videoSource  = document.getElementById('videoSource') as HTMLSourceElement;
+  const bigPlayBtn   = document.getElementById('bigPlayBtn');
+  const togglePlayBtn= document.getElementById('togglePlayBtn');
+  const playIcon     = document.getElementById('playIcon') as HTMLElement;
+  const pauseIcon    = document.getElementById('pauseIcon') as HTMLElement;
+  const prevBtn      = document.getElementById('prevBtn');
+  const nextBtn      = document.getElementById('nextBtn');
+  const videoTitle   = document.getElementById('videoTitle');
+  const videoCategory= document.getElementById('videoCategory');
 
   function playVideo() {
     video.play();
@@ -104,7 +105,7 @@ const playlist = [
     currentTrack = (index + playlistData.length) % playlistData.length;
     const track = playlistData[currentTrack];
     videoSource.src = track.src;
-    if (videoTitle) videoTitle.textContent = track.title;
+    if (videoTitle)    videoTitle.textContent    = track.title;
     if (videoCategory) videoCategory.textContent = track.category;
     video.load();
     if (isUserPlaying) playVideo();
@@ -113,13 +114,11 @@ const playlist = [
   prevBtn?.addEventListener('click', () => loadTrack(currentTrack - 1));
   nextBtn?.addEventListener('click', () => loadTrack(currentTrack + 1));
 
-  // Alt prev/next arrows (visible when not playing)
   const prevBtnAlt = document.getElementById('prevBtnAlt');
   const nextBtnAlt = document.getElementById('nextBtnAlt');
   prevBtnAlt?.addEventListener('click', () => loadTrack(currentTrack - 1));
   nextBtnAlt?.addEventListener('click', () => loadTrack(currentTrack + 1));
 
-  // Auto-pause when out of viewport
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (!entry.isIntersecting && !video.paused) {
@@ -134,7 +133,6 @@ const playlist = [
 
   observer.observe(document.getElementById('highlights')!);
 
-  // Touch swipe
   let touchStartX = 0;
   container.addEventListener('touchstart', (e: TouchEvent) => {
     touchStartX = e.changedTouches[0].screenX;
@@ -237,7 +235,6 @@ const playlist = [
     transform: translate(-50%, -50%) scale(0.8);
   }
 
-  /* Nav arrows — visible when NOT playing */
   .nav-arrows {
     position: absolute;
     top: 50%;
@@ -323,6 +320,11 @@ const playlist = [
     width: 22px;
     height: 22px;
     fill: currentColor;
+  }
+
+  .video-empty {
+    color: var(--color-text-subtle);
+    font-size: 0.9rem;
   }
 
   @media (max-width: 768px) {

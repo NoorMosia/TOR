@@ -1,11 +1,22 @@
 ---
-// Founder section - editorial, asymmetric
+import { supabase } from '../lib/supabase';
+
+const keys = ['founder_name', 'founder_role', 'founder_quote', 'founder_bio', 'founder_image'];
+const { data: rows } = await supabase
+  .from('site_content')
+  .select('key, value')
+  .in('key', keys);
+
+const c: Record<string, string> = {};
+rows?.forEach((r) => { c[r.key] = r.value; });
+
+// Fallbacks
 const founder = {
-  name: 'Nomakhosini Dyosopu',
-  role: 'Founder',
-  image: '/images/noma.jpg',
-  quote: 'I wanted a room where the music doesn\'t have to explain itself. Where comedy doesn\'t have to be safe. Where artists feel like they\'re home.',
-  bio: 'A decade in Cape Town\'s nightlife, from booking acts in backrooms to building The One Room from nothing. Nomakhosini created a space that doesn\'t compromise — for artists or for the people who come to listen.',
+  name:  c.founder_name  ?? 'Nomakhosini Dyosopu',
+  role:  c.founder_role  ?? 'Founder',
+  image: c.founder_image ?? '/images/noma.jpg',
+  quote: c.founder_quote ?? '',
+  bio:   c.founder_bio   ?? '',
 };
 ---
 
@@ -16,13 +27,17 @@ const founder = {
     </div>
 
     <div class="founder-text-col">
-      <blockquote class="founder-quote reveal">
-        "{founder.quote}"
-      </blockquote>
+      {founder.quote && (
+        <blockquote class="founder-quote reveal">
+          "{founder.quote}"
+        </blockquote>
+      )}
 
-      <div class="founder-bio reveal">
-        <p>{founder.bio}</p>
-      </div>
+      {founder.bio && (
+        <div class="founder-bio reveal">
+          <p>{founder.bio}</p>
+        </div>
+      )}
 
       <div class="founder-sig">
         <span class="founder-name">{founder.name}</span>

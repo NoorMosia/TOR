@@ -1,0 +1,220 @@
+---
+import AdminLayout from '../layouts/AdminLayout.astro';
+import { getSessionClient } from '../lib/auth';
+
+const supabase = getSessionClient(Astro.cookies);
+let saved = false;
+let errors: Record<string, string> = {};
+
+if (Astro.request.method === 'POST') {
+  const form = await Astro.request.formData();
+  const action = form.get('_action')?.toString();
+
+  if (action === 'delete') {
+    const id = form.get('id')?.toString();
+    if (id) await supabase.from('videos').delete().eq('id', id);
+
+  } else if (action === 'add') {
+    const title = form.get('title')?.toString().trim() ?? '';
+    const src   = form.get('src')?.toString().trim()   ?? '';
+    if (!title) errors.title = 'Title is required';
+    if (!src)   errors.src   = 'Video URL is required';
+
+    if (!errors.title && !errors.src) {
+      const { count } = await supabase.from('videos').select('*', { count: 'exact', head: true });
+      await supabase.from('videos').insert({
+        title,
+        category:   form.get('category')?.toString().trim() || null,
+        src,
+        poster:     form.get('poster')?.toString().trim()   || null,
+        sort_order: count ?? 0,
+      });
+      saved = true;
+    }
+
+  } else if (action === 'update') {
+    const id    = form.get('id')?.toString();
+    const title = form.get('title')?.toString().trim() ?? '';
+    const src   = form.get('src')?.toString().trim()   ?? '';
+    if (id && title && src) {
+      await supabase.from('videos').update({
+        title,
+        category:   form.get('category')?.toString().trim() || null,
+        src,
+        poster:     form.get('poster')?.toString().trim()   || null,
+        sort_order: parseInt(form.get('sort_order')?.toString() ?? '0', 10),
+      }).eq('id', id);
+      saved = true;
+    }
+  }
+}
+
+const { data: videos } = await supabase
+  .from('videos')
+  .select('*')
+  .order('sort_order', { ascending: true });
+---
+
+<AdminLayout title="Videos" section="/videos">
+
+  {saved && <p class="save-notice">✓ Changes saved</p>}
+
+  <!-- Existing videos -->
+  <div class="section-block">
+    <div class="section-header">
+      <h2 class="section-title">Playlist ({videos?.length ?? 0})</h2>
+    </div>
+
+    {videos && videos.length > 0 ? (
+      <div class="videos-list">
+        {videos.map((video, i) => (
+          <form method="POST" class="video-row card">
+            <input type="hidden" name="_action" value="update" />
+            <input type="hidden" name="id" value={video.id} />
+
+            <div class="video-fields">
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Title <span class="req">*</span></label>
+                  <input type="text" name="title" value={video.title} required />
+                </div>
+                <div class="form-group">
+                  <label>Category</label>
+                  <input type="text" name="category" value={video.category ?? ''} placeholder="e.g. Concert, Session" />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>Video URL <span class="req">*</span></label>
+                <input type="text" name="src" value={video.src} required placeholder="/videos/performance.mp4 or https://..." />
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Poster image URL</label>
+                  <input type="text" name="poster" value={video.poster ?? ''} placeholder="/images/posters/poster.jpg" />
+                </div>
+                <div class="form-group">
+                  <label>Order</label>
+                  <input type="number" name="sort_order" value={video.sort_order ?? i} min="0" style="max-width:80px" />
+                </div>
+              </div>
+            </div>
+
+            <div class="video-actions">
+              <button type="submit" class="btn btn-primary btn-sm">Save</button>
+              <button
+                type="button"
+                class="btn btn-danger btn-sm delete-video-btn"
+                data-id={video.id}
+                data-title={video.title}
+              >Delete</button>
+            </div>
+          </form>
+        ))}
+      </div>
+    ) : (
+      <div class="empty-state"><p>No videos yet. Add one below.</p></div>
+    )}
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- Add new video -->
+  <div class="section-block">
+    <h2 class="section-title" style="margin-bottom:1rem;">Add a video</h2>
+    <form method="POST" class="card">
+      <input type="hidden" name="_action" value="add" />
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="new_title">Title <span class="req">*</span></label>
+          <input type="text" id="new_title" name="title" placeholder="e.g. Zoë Modiga — Live" />
+          {errors.title && <span class="field-error">{errors.title}</span>}
+        </div>
+        <div class="form-group">
+          <label for="new_category">Category</label>
+          <input type="text" id="new_category" name="category" placeholder="e.g. Concert" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="new_src">Video URL <span class="req">*</span></label>
+        <input type="text" id="new_src" name="src" placeholder="/videos/performance.mp4 or https://..." />
+        {errors.src && <span class="field-error">{errors.src}</span>}
+      </div>
+
+      <div class="form-group">
+        <label for="new_poster">Poster image URL</label>
+        <input type="text" id="new_poster" name="poster" placeholder="/images/posters/poster.jpg" />
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Add video</button>
+      </div>
+    </form>
+  </div>
+
+</AdminLayout>
+
+<!-- Delete form -->
+<form id="delete-video-form" method="POST" style="display:none;">
+  <input type="hidden" name="_action" value="delete" />
+  <input type="hidden" name="id" id="delete-video-id" />
+</form>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('.delete-video-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      if (!confirm(`Delete "${btn.dataset.title}"?`)) return;
+      const form    = document.getElementById('delete-video-form') as HTMLFormElement;
+      const idField = document.getElementById('delete-video-id') as HTMLInputElement;
+      idField.value = btn.dataset.id!;
+      form.submit();
+    });
+  });
+</script>
+
+<style>
+  .save-notice {
+    font-size: 0.825rem;
+    color: var(--color-success);
+    margin-bottom: 1.25rem;
+    font-weight: 600;
+  }
+  .section-block { margin-bottom: 2rem; }
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+  .section-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-text-subtle);
+  }
+  .videos-list { display: flex; flex-direction: column; gap: 1rem; }
+  .video-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1.25rem;
+    align-items: start;
+  }
+  .video-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding-top: 1.5rem;
+  }
+  .req { color: var(--color-accent); }
+  .field-error { font-size: 0.75rem; color: var(--color-error); }
+  .form-actions { display: flex; justify-content: flex-end; margin-top: 0.5rem; }
+
+  @media (max-width: 640px) {
+    .video-row { grid-template-columns: 1fr; }
+    .video-actions { flex-direction: row; padding-top: 0; }
+  }
+</style>

@@ -1,4 +1,6 @@
 ---
+import { supabase } from '../lib/supabase';
+
 interface Props {
   title?: string;
   description?: string;
@@ -7,9 +9,18 @@ interface Props {
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
+// Fetch SEO content from Supabase, fall back to defaults if not set
+const { data: rows } = await supabase
+  .from('site_content')
+  .select('key, value')
+  .in('key', ['site_title', 'site_description']);
+
+const seo: Record<string, string> = {};
+rows?.forEach((r) => { seo[r.key] = r.value; });
+
 const {
-  title = 'The One Room | Music & Comedy Club — Gqeberha',
-  description = 'Live jazz, soul, hip-hop and stand-up comedy in Gqeberha. The One Room — where artists feel like they\'re home.',
+  title       = seo.site_title       ?? 'The One Room | Music & Comedy Club — Gqeberha',
+  description = seo.site_description ?? 'Live jazz, soul, hip-hop and stand-up comedy in Gqeberha. The One Room — where artists feel like they\'re home.',
   image = '/images/noma.jpg',
 } = Astro.props;
 ---

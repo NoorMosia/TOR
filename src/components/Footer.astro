@@ -1,4 +1,21 @@
 ---
+import { supabase } from '../lib/supabase';
+
+const keys = ['venue_address', 'venue_email', 'venue_phone', 'venue_hours', 'footer_tagline'];
+const { data: rows } = await supabase
+  .from('site_content')
+  .select('key, value')
+  .in('key', keys);
+
+const c: Record<string, string> = {};
+rows?.forEach((r) => { c[r.key] = r.value; });
+
+const address  = c.venue_address  ?? '52 Westbourne Rd, Gqeberha';
+const email    = c.venue_email    ?? 'info@theoneroom.co.za';
+const phone    = c.venue_phone    ?? '+27 (0) 21 555 0199';
+const hours    = c.venue_hours    ?? 'Wed — Sun from 7 PM';
+const tagline  = c.footer_tagline ?? 'Music. Comedy. Gqeberha.';
+
 const currentYear = new Date().getFullYear();
 ---
 
@@ -6,7 +23,7 @@ const currentYear = new Date().getFullYear();
   <div class="footer-top">
     <div class="footer-brand">
       <span class="footer-logo heading-display">The One Room</span>
-      <p class="footer-desc">Music. Comedy. Gqeberha.</p>
+      <p class="footer-desc">{tagline}</p>
     </div>
 
     <div class="footer-links-group">
@@ -17,16 +34,16 @@ const currentYear = new Date().getFullYear();
       </div>
 
       <div class="footer-col">
-        <a href="#">52 Westbourne Rd, Gqeberha</a>
-        <a href="#">info@theoneroom.co.za</a>
-        <a href="#">+27 (0) 21 555 0199</a>
+        <a href={`https://maps.google.com/?q=${encodeURIComponent(address)}`} target="_blank" rel="noopener">{address}</a>
+        <a href={`mailto:${email}`}>{email}</a>
+        <a href={`tel:${phone.replace(/\s/g, '')}`}>{phone}</a>
       </div>
     </div>
   </div>
 
   <div class="footer-bottom">
     <span>&copy; {currentYear} The One Room</span>
-    <span>Wed — Sun from 7 PM</span>
+    <span>{hours}</span>
   </div>
 </footer>
 

@@ -1,42 +1,20 @@
 ---
-// Upcoming Shows - dark bg, clean list, no badges
-const shows = [
-  {
-    date: '15 Aug',
-    title: 'Zoë Modiga',
-    sub: 'Nomhanda Tour',
-    time: '7:30 PM',
-    price: 'R350',
-  },
-  {
-    date: '21 Aug',
-    title: 'Loyiso Gola',
-    sub: 'Unfiltered',
-    time: '8:00 PM',
-    price: 'R250',
-  },
-  {
-    date: '29 Aug',
-    title: 'Nduduzo Makhathini',
-    sub: 'Quintet',
-    time: '7:00 PM',
-    price: 'R400',
-  },
-  {
-    date: '04 Sep',
-    title: 'Sun-El Musician',
-    sub: 'Planet El Live',
-    time: '9:00 PM',
-    price: 'R300',
-  },
-  {
-    date: '12 Sep',
-    title: 'Celeste Ntuli & Friends',
-    sub: 'Comedy Night',
-    time: '8:30 PM',
-    price: 'R280',
-  },
-];
+import { supabase } from '../lib/supabase';
+
+const today = new Date().toISOString().split('T')[0];
+
+const { data: shows } = await supabase
+  .from('events')
+  .select('id, title, artist, subtitle, date, time, price, booking_url')
+  .gte('date', today)
+  .order('date', { ascending: true })
+  .limit(10);
+
+function fmtDate(d: string) {
+  return new Date(d + 'T00:00:00').toLocaleDateString('en-ZA', {
+    day: 'numeric', month: 'short',
+  });
+}
 ---
 
 <section id="shows" class="section-fullscreen shows-section">
@@ -47,22 +25,24 @@ const shows = [
     </div>
 
     <div class="shows-list">
-      {shows.map((show) => (
-        <a href="#" class="show-item">
+      {shows && shows.length > 0 ? shows.map((show) => (
+        <a href={show.booking_url ?? '#'} class="show-item">
           <div class="show-left">
-            <span class="show-date">{show.date}</span>
+            <span class="show-date">{fmtDate(show.date)}</span>
             <div class="show-info">
-              <span class="show-title">{show.title}</span>
-              <span class="show-sub">{show.sub}</span>
+              <span class="show-title">{show.artist ?? show.title}</span>
+              <span class="show-sub">{show.subtitle ?? show.title}</span>
             </div>
           </div>
           <div class="show-right">
             <span class="show-time">{show.time}</span>
-            <span class="show-price">{show.price}</span>
+            {show.price && <span class="show-price">{show.price}</span>}
             <span class="show-arrow">&#8599;</span>
           </div>
         </a>
-      ))}
+      )) : (
+        <p class="no-shows">No upcoming shows right now. Check back soon.</p>
+      )}
     </div>
   </div>
 </section>
@@ -190,6 +170,13 @@ const shows = [
     opacity: 0;
     transform: translate(-4px, 4px);
     transition: all 0.2s var(--ease-out);
+  }
+
+  .no-shows {
+    padding: 2rem 0;
+    color: var(--color-text-subtle);
+    font-size: 0.9rem;
+    border-top: 1px solid var(--color-border);
   }
 
   @media (max-width: 768px) {
