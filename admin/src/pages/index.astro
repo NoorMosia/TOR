@@ -1,6 +1,0 @@
----
-// Root redirect — send to dashboard if logged in, login if not
-import { getUser } from '../lib/auth';
-const user = await getUser(Astro.cookies);
-return Astro.redirect(user ? '/dashboard' : '/login');
----
