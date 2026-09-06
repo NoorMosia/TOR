@@ -15,6 +15,14 @@ function fmtDate(d: string) {
     day: 'numeric', month: 'short',
   });
 }
+
+function fmtTime(t: string | null | undefined) {
+  if (!t) return '';
+  const [h, m] = t.split(':').map(Number);
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  const hour = h % 12 || 12;
+  return `${hour}:${String(m).padStart(2, '0')} ${ampm}`;
+}
 ---
 
 <section id="shows" class="section-fullscreen shows-section">
@@ -26,7 +34,7 @@ function fmtDate(d: string) {
 
     <div class="shows-list">
       {shows && shows.length > 0 ? shows.map((show) => (
-        <a href={show.booking_url ?? '#'} class="show-item">
+        <a href={show.booking_url ?? '#'} class="show-item" target="_blank" rel="noopener noreferrer">
           <div class="show-left">
             <span class="show-date">{fmtDate(show.date)}</span>
             <div class="show-info">
@@ -35,7 +43,7 @@ function fmtDate(d: string) {
             </div>
           </div>
           <div class="show-right">
-            <span class="show-time">{show.time}</span>
+            <span class="show-time">{fmtTime(show.time)}</span>
             {show.price && <span class="show-price">{show.price}</span>}
             <span class="show-arrow">&#8599;</span>
           </div>
@@ -186,31 +194,47 @@ function fmtDate(d: string) {
     }
 
     .show-item {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 0.75rem;
+      align-items: center;
+      gap: 1rem;
       padding: 1.25rem 0;
     }
 
     .show-left {
+      flex: 1;
+      min-width: 0;
       flex-direction: row;
       align-items: center;
       gap: 1rem;
     }
 
+    .show-info {
+      min-width: 0;
+    }
+
+    .show-title,
+    .show-sub {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
     .show-right {
-      width: 100%;
-      justify-content: space-between;
-      padding-left: 0;
+      flex-shrink: 0;
+      gap: 0.75rem;
     }
 
     .show-time {
       display: none;
     }
 
+    .show-price {
+      font-size: 0.85rem;
+    }
+
     .show-arrow {
-      opacity: 1;
+      opacity: 0.7;
       transform: none;
+      font-size: 1rem;
     }
 
     .show-item:hover {

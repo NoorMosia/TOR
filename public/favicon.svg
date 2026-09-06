@@ -1,3 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect x="2" y="2" width="28" height="28" rx="6" ry="6" fill="none" stroke="#242320" stroke-width="2.5"/>
+  <!-- Microphone in darkish grey, transparent background -->
+  <g fill="none" stroke="#6b6b6b" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Mic capsule (rounded rectangle) -->
+    <rect x="10.5" y="2.5" width="11" height="17" rx="5.5" fill="#6b6b6b" stroke="none"/>
+    <!-- Cradle arc -->
+    <path d="M6 14 C6 21 26 21 26 14"/>
+    <!-- Stem -->
+    <path d="M16 21 L16 27"/>
+    <!-- Base -->
+    <path d="M9.5 29 L22.5 29"/>
+  </g>
 </svg>

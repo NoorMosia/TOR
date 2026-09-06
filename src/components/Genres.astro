@@ -61,7 +61,8 @@ const { data: vibes } = await supabase
   .vibes-scroll {
     display: flex;
     gap: 1.5rem;
-    padding: 0 var(--space-lg);
+    padding-inline: var(--space-lg);
+    scroll-padding-inline: var(--space-lg);
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
@@ -126,7 +127,8 @@ const { data: vibes } = await supabase
     }
 
     .vibes-scroll {
-      padding: 0 var(--space-md);
+      padding-inline: var(--space-md);
+      scroll-padding-inline: var(--space-md);
       gap: 1rem;
     }
 

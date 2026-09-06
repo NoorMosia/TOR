@@ -19,8 +19,8 @@ const seo: Record<string, string> = {};
 rows?.forEach((r) => { seo[r.key] = r.value; });
 
 const {
-  title       = seo.site_title       ?? 'The One Room | Music & Comedy Club — Gqeberha',
-  description = seo.site_description ?? 'Live jazz, soul, hip-hop and stand-up comedy in Gqeberha. The One Room — where artists feel like they\'re home.',
+  title       = seo.site_title       ?? 'The One Room | Music & Comedy Club, Gqeberha',
+  description = seo.site_description ?? 'Live jazz, soul, hip-hop and stand-up comedy in Gqeberha. The One Room, where artists feel like they\'re home.',
   image = '/images/noma.jpg',
 } = Astro.props;
 ---
@@ -57,7 +57,10 @@ const {
 
     <!-- Favicons -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
     <meta name="theme-color" content="#111110" />
 
     <!-- Fonts -->
@@ -88,7 +91,7 @@ const {
       "event": [
         {
           "@type": "MusicEvent",
-          "name": "Zoë Modiga — Nomhanda Tour",
+          "name": "Zoë Modiga: Nomhanda Tour",
           "startDate": "2026-08-15T19:30",
           "performer": { "@type": "Person", "name": "Zoë Modiga" },
           "offers": { "@type": "Offer", "price": "350", "priceCurrency": "ZAR", "url": "https://tor-jet.vercel.app/#shows" },
@@ -96,7 +99,7 @@ const {
         },
         {
           "@type": "ComedyEvent",
-          "name": "Loyiso Gola — Unfiltered",
+          "name": "Loyiso Gola: Unfiltered",
           "startDate": "2026-08-21T20:00",
           "performer": { "@type": "Person", "name": "Loyiso Gola" },
           "offers": { "@type": "Offer", "price": "250", "priceCurrency": "ZAR", "url": "https://tor-jet.vercel.app/#shows" },

@@ -1,5 +1,5 @@
 /* =============================================================================
-   The One Room — Global Styles
+   The One Room: Global Styles
    Street/culture-forward. Raw. Textured. Big photography.
    ============================================================================= */
 
@@ -14,7 +14,7 @@
 
 /* --- CSS VARIABLES --- */
 :root {
-  /* Colors — warm, earthy, grounded */
+  /* Colors: warm, earthy, grounded */
   --color-bg: #111110;
   --color-bg-alt: #1a1918;
   --color-surface: #242320;
